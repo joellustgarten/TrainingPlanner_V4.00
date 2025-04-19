@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta name="description"
+        content="Author: Joel Lustgarten, Organization: Technical training center, Area: MA-AA/TSS2-LA, Company: Robert Bosch Ltda., Country: Brazil, Content: Technical training material" />
+    <meta name="google-site-verification" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="all" />
+    <meta name="googlebot" content="noarchive" />
+    <meta name="googlebot" content="notranslate" />
+    <meta name="google" content="nopagereadaloud" />
+    <meta http-equiv="imagetoolbar" content="no" />
+    <meta name="rating" content="general" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta name="copyright" content="© Robert Bosch Ltda." />
+    <meta name="keywords" content="Bosch, Technical training, Techical training center, Mechanics" />
+    <link rel="icon" type="image/x-icon" href="../assets/favicons/favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="../css/main.css" />
+    <title>CTA | Training Planner</title>
+</head>
+<style>
+    /* Overall calendar container */
+    .calendar,
+    .messages {
+        width: 90vw;
+        margin: 20px auto;
+    }
+
+    .title {
+        display: block;
+    }
+
+    /* Month title spanning full width */
+    .month-title {
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    /* Weeks container with horizontal scrolling */
+    .weeks-container,
+    .messages-container {
+        display: flex;
+        overflow-x: auto;
+        gap: 10px;
+        padding-bottom: 10px;
+    }
+
+    /* Each week container */
+    .week {
+        flex: 0 0 250px;
+        /* fixed width to allow horizontal scrolling */
+        height: 45vh;
+        border: 1px solid var(--plain__enabled__front__default);
+        background-color: var(--plain__disabled__front__default);
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+    }
+
+    /* Week header */
+    .week-header {
+        background-color: var(--neutral__enabled__fill__default);
+        padding: 5px;
+        text-align: center;
+        font-weight: bold;
+        border-bottom: 1px solid var(--plain__enabled__front__default);
+    }
+
+    /* Week days header */
+    .week-days-header {
+        display: flex;
+        background-color: #f0f0f0;
+        border-bottom: 1px solid #000;
+    }
+
+    .week-days-header .day {
+        flex: 1;
+        text-align: center;
+        padding: 5px;
+        font-weight: bold;
+        border-right: 1px solid #ccc;
+    }
+
+    .week-days-header .day:last-child {
+        border-right: none;
+    }
+
+    /* Container for event/activity rows */
+    .events-container {
+        flex: 1;
+        /*overflow-y: auto;*/
+        padding: 5px;
+        position: relative;
+        /* to position event blocks absolutely */
+    }
+
+    /* Each activity row: using grid for 5 columns */
+    .activity-row {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 2px;
+        position: relative;
+        /* event block will be absolutely positioned here */
+        margin-bottom: 10px;
+    }
+
+    /* Free cell: shows individual border */
+    .activity-row .free {
+        border: 1px dashed #aaa;
+        min-height: 40px;
+        box-sizing: border-box;
+    }
+
+    /* Occupied event block spanning multiple days */
+    .activity-row .occupied {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        background-color: lightblue;
+        border: 1px solid #000;
+        font-size: 0.8em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+    }
+</style>
+
+<body>
+
+    <body>
+
+        <div class="calendar">
+            <!-- Month select and title -->
+            <div class="o-form__row" style="align-items: center; justify-content: space-between;">
+                <div class="m-form-field -quarter">
+                    <div class="a-month-input">
+                        <label for="month-input" data-i18n="month-schedulle-select"></label>
+                        <input type="month" id="month-input" name="input month with label" />
+                        <button type="button" class="a-month-input__button" aria-label="open dialog">
+                            <i class="a-icon boschicon-bosch-ic-calendar-clock"></i>
+                        </button>
+                    </div>
+                </div>
+                <h3 class="month-title" style="margin-top: 0;" data-i18n="schedulle-title"></h3>
+            </div>
+            <!-- Weeks container (will be built dynamically) -->
+            <div class="weeks-container" id="weeks-container">
+                <!-- Week containers will be appended here by JS -->
+            </div>
+        </div>
+        <div class="holidays">
+        </div>
+        <div class="table" style="margin-top: 50px; margin-bottom: 30px;">
+            <table class="m-table">
+                <thead>
+                    <th data-i18n="event-header"></th>
+                    <th data-i18n="sd-header"></th>
+                    <th data-i18n="ed-header"></th>
+                    <th data-i18n="st-header"></th>
+                    <th data-i18n="par-header"></th>
+                </thead>
+                <tbody class="tableContent">
+                    <!-- event details table rows will be appended here by JS -->
+                </tbody>
+            </table>
+        </div>
+        <script src="../js/script.js"></script>
+        <script type="module">
+            import { setLanguage, updateLanguage, setTheme, updateUsernameDisplay, logOut, login, updateNavMenu, navigationMenu, debounce, getNotificationContainer, showPersistentNotification, hidePersistentNotification, showNotification, createChart } from '../js/common.js';
+            setLanguage();
+        </script>
+        <script>
+            // Month names array for display.
+            const monthNames = [
+                "January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+            ];
+
+            // When the user changes the month, update the calendar.
+            document.getElementById('month-input').addEventListener('change', async (e) => {
+                const selectedMonth = e.target.value; // Expected format: "YYYY-MM"
+                updateActivities(selectedMonth);
+                updateHolidays(selectedMonth)
+                updateStatusTable(selectedMonth);
+            });
+
+            // Helper: Get ISO week number for a given date.
+            function getWeekNumber(date) {
+                const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+                const dayNum = d.getUTCDay() || 7; // Sunday becomes 7.
+                d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+                const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+                return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+            }
+
+            // Helper: Format a date as yyyy-mm-dd.
+            function formatDate(date) {
+                const d = new Date(date);
+                return d.toISOString().split("T")[0];
+            }
+
+            // Helper: Format a date for MS Access (mm/dd/yyyy).
+            function formatDateForAccess(inputDate) {
+                if (!inputDate) return '';
+                let dateString;
+                if (inputDate instanceof Date) {
+                    const year = inputDate.getFullYear();
+                    const month = String(inputDate.getMonth() + 1).padStart(2, '0');
+                    const day = String(inputDate.getDate()).padStart(2, '0');
+                    dateString = `${year}-${month}-${day}`;
+                } else {
+                    dateString = inputDate;
+                }
+                const parts = dateString.split('-');
+                if (parts.length !== 3) {
+                    console.error('Invalid date format. Expected yyyy-mm-dd:', dateString);
+                    return dateString;
+                }
+                const [year, month, day] = parts;
+                return `${month}/${day}/${year}`;
+            }
+
+            // Shorten event names (custom mapping or taking first letters).
+            function getShortName(fullName) {
+                const mapping = {
+                    '1002 - TREINAMENTO DIAG SIST CR1': 'CR1',
+                    '1011 - TREINAMENTO DIAG SIST CR1': 'CR1',
+                    '1003 - TREINAMENTO DIAG SIST CR2': 'CR2',
+                    '1010 - TREINAMENTO BOMBAS DE ALTA PRESSAO CR': 'BCR',
+                    '1011 - TREINAMENTO INJETORES CR REP FASE 1 E 2': 'ICR1',
+                    '1012 - TREINAMENTO INJETORES CR REP FASE 3': 'ICR3',
+                    '1015 - TREINAMENTO POS-TRATAMENTO DENOXTRONIC': 'DEN',
+                    '1020 - TREINAMENTO DIESEL MECANICO I - BOMBA A': 'EP1',
+                    '1021 - TREINAMENTO DIESEL MECANICO II - BOMBA P': 'EP2',
+                    '1022 - TREINAMENTO BOMBA VE COM KKSB E LFB': 'VE',
+                    '2001 - TREINAMENTO DIAG DE INJECAO ELETRONICA': 'IE',
+                    '2002 - TREINAMENTO DIAG DE INJECAO DIRETA': 'ID',
+                    '2003 - TREINAMENTO DIAG AVANCADO COM SCANNER': 'KTS',
+                    '3002 - TREINAMENTO OSCILOSCOPIO INTERPR SINAIS': 'FSA',
+                    '3003 - TREINAMENTO VEIC HIBRIDO-ELETRICO FASE 3': 'CR3',
+                    '3004 - TREINAMENTO DIAG DE REDES DE BORDO': 'RED',
+                    '3005 - TREINAMENTO ELETRONICA VEICULAR APLICADA': 'ELV',
+                    '3010 - TREINAMENTO VEIC HIBRIDO-ELETRICO FASE 2': 'EV2',
+                    '4010 - TREINAMENTO SISTEMAS ASSIST CONDUCAO ADAS': 'ADA',
+                    '5001 - TREINAMENTO CUSTOMIZADO BR': 'CBR',
+                    '5002 - TREINAMENTO CUSTOMIZADO WLA': 'CLA',
+                    '5010 - TREINAMENTO CUSTOMIZADO INTC': 'CIN',
+                    '7001 - TREINAMENTO VEIC HIBRIDO-ELETRICO FASE 1': 'EV1',
+                    '7003 - CONSULTORIA AUTOMOTIVA INTC': 'CON',
+                    '7010 - MASTER EM DIAGNOSE AUTOMOTIVA': 'MAS',
+                    '7011 - MASTER R': 'MAR',
+                    '7020 - GESA - GESTAO EMPRESAS SERV AUTOMOTIVOS': 'GES',
+                    '7032 - EVO AUTOMOTIVA WLA': 'EVOB',
+                    '7050 - EVO AUTOMOTIVA BR': 'EVLA'
+                };
+                return mapping[fullName] || fullName.split(' ').map(w => w[0]).join('');
+            }
+
+            // Get initials from a full name (for resources).
+            function getInitials(fullName) {
+                const nameParts = fullName.split(' ');
+                if (nameParts.length === 1) return nameParts[0].charAt(0);
+                return `${nameParts[0].charAt(0)}${nameParts[nameParts.length - 1].charAt(0)}`;
+            }
+
+            /**
+             * Build week containers dynamically.
+             * We first adjust the query start date to the Monday of that week.
+             * Then, for each week, we use the week’s Thursday (Monday + 3 days) to determine the month label.
+             */
+            function buildWeekContainers(adjustedStart, totalDays) {
+                const weeksContainer = document.getElementById('weeks-container');
+                weeksContainer.innerHTML = ""; // Clear previous containers.
+                const numWeeks = Math.ceil(totalDays / 7);
+                for (let i = 0; i < numWeeks; i++) {
+                    // Compute the start of the week.
+                    const weekStart = new Date(adjustedStart);
+                    weekStart.setDate(adjustedStart.getDate() + (i * 7));
+
+                    const weekDiv = document.createElement('div');
+                    weekDiv.classList.add('week');
+                    // Store the week’s start date.
+                    weekDiv.dataset.weekStart = weekStart.toISOString();
+
+                    // Use the Thursday of the week to determine the month.
+                    const referenceDate = new Date(weekStart);
+                    referenceDate.setDate(referenceDate.getDate() + 3);
+                    const weekMonthName = monthNames[referenceDate.getMonth()];
+
+                    const weekHeader = document.createElement('div');
+                    weekHeader.classList.add('week-header');
+                    const weekNum = getWeekNumber(weekStart);
+                    weekHeader.textContent = `Week ${weekNum} - ${weekMonthName}`;
+
+                    // Days header (M, T, W, T, F).
+                    const daysHeader = document.createElement('div');
+                    daysHeader.classList.add('week-days-header');
+                    ["M", "T", "W", "T", "F"].forEach(letter => {
+                        const dayDiv = document.createElement('div');
+                        dayDiv.classList.add('day');
+                        dayDiv.textContent = letter;
+                        daysHeader.appendChild(dayDiv);
+                    });
+
+                    // Create events container (relative position for absolute event blocks).
+                    const eventsContainer = document.createElement('div');
+                    eventsContainer.classList.add('events-container');
+                    eventsContainer.style.position = 'relative';
+
+                    // Assemble the week container.
+                    weekDiv.appendChild(weekHeader);
+                    weekDiv.appendChild(daysHeader);
+                    weekDiv.appendChild(eventsContainer);
+                    weeksContainer.appendChild(weekDiv);
+                }
+            }
+
+            /**
+             * Updates each week container with event blocks.
+             * If events overlap within the same week, they are placed in separate rows.
+             */
+            function updateCalendarEvents(eventsArray) {
+                const weekContainers = document.querySelectorAll('.week');
+                weekContainers.forEach(weekContainer => {
+                    const weekStart = new Date(weekContainer.dataset.weekStart);
+                    // Monday is weekStart; Friday is Monday + 4 days.
+                    const weekEnd = new Date(weekStart);
+                    weekEnd.setDate(weekStart.getDate() + 4);
+                    const container = weekContainer.querySelector('.events-container');
+                    container.innerHTML = ""; // Clear previous event blocks.
+
+                    // Gather events overlapping this week.
+                    let weekEvents = [];
+                    eventsArray.forEach(event => {
+                        const eventStart = new Date(event.event_start_date);
+                        const eventEnd = new Date(event.event_end_date);
+                        if (eventEnd < weekStart || eventStart > weekEnd) return;
+
+                        // Determine effective start and end dates for this week.
+                        const effectiveStart = eventStart < weekStart ? weekStart : eventStart;
+                        const effectiveEnd = eventEnd > weekEnd ? weekEnd : eventEnd;
+
+                        // Compute day indices (0=Sunday, so adjust: Monday=1, Friday=5).
+                        let startDay = effectiveStart.getDay() || 7;
+                        let endDay = effectiveEnd.getDay() || 7;
+                        // Clamp to Monday (1) and Friday (5).
+                        const startIdx = Math.max(1, Math.min(5, startDay));
+                        const endIdx = Math.max(1, Math.min(5, endDay));
+                        const span = endIdx - startIdx + 1;
+                        const cellWidthPercent = 100 / 5;
+                        const leftPercent = (startIdx - 1) * cellWidthPercent;
+                        const widthPercent = span * cellWidthPercent;
+
+                        weekEvents.push({
+                            event,
+                            leftPercent,
+                            widthPercent,
+                            startIdx,
+                            endIdx
+                        });
+                    });
+
+                    // Sort events by horizontal position.
+                    weekEvents.sort((a, b) => a.leftPercent - b.leftPercent);
+
+                    // Place events in rows to avoid overlap.
+                    const rows = [];
+                    weekEvents.forEach(we => {
+                        let placed = false;
+                        for (let i = 0; i < rows.length; i++) {
+                            const row = rows[i];
+                            let conflict = false;
+                            for (const placedEvent of row) {
+                                const placedLeft = placedEvent.leftPercent;
+                                const placedRight = placedEvent.leftPercent + placedEvent.widthPercent;
+                                const newLeft = we.leftPercent;
+                                const newRight = we.leftPercent + we.widthPercent;
+                                if (!(newRight <= placedLeft || newLeft >= placedRight)) {
+                                    conflict = true;
+                                    break;
+                                }
+                            }
+                            if (!conflict) {
+                                row.push(we);
+                                we.rowIndex = i;
+                                placed = true;
+                                break;
+                            }
+                        }
+                        if (!placed) {
+                            rows.push([we]);
+                            we.rowIndex = rows.length - 1;
+                        }
+                    });
+
+                    // Define a row height (adjust as needed).
+                    const rowHeight = 30;
+                    weekEvents.forEach(we => {
+                        const { event, leftPercent, widthPercent, rowIndex } = we;
+                        // Collect all resources per category.
+                        const resourcesInst = event.resources.filter(r => r.resource_category_id === 1);
+                        const resourcesRoom = event.resources.filter(r => r.resource_category_id === 6);
+                        const resAbbrevInst = resourcesInst.map(r => getInitials(r.resource_name)).join(',');
+                        const resAbbrevRoom = resourcesRoom.map(r => getInitials(r.resource_name)).join(',');
+
+                        const eventBlock = document.createElement('div');
+                        eventBlock.classList.add('occupied');
+                        eventBlock.style.position = 'absolute';
+                        eventBlock.style.left = leftPercent + '%';
+                        eventBlock.style.width = widthPercent + '%';
+                        eventBlock.style.top = (rowIndex * rowHeight) + 'px';
+                        eventBlock.style.height = rowHeight + 'px';
+                        eventBlock.style.backgroundColor = 'lightblue';
+                        eventBlock.style.border = '1px solid #000';
+                        eventBlock.style.fontSize = '0.5em';
+                        eventBlock.style.display = 'flex';
+                        eventBlock.style.alignItems = 'center';
+                        eventBlock.style.justifyContent = 'center';
+                        eventBlock.style.pointerEvents = 'none';
+                        eventBlock.style.whiteSpace = 'normal';
+                        eventBlock.style.wordWrap = 'break-word';
+                        const text = document.createElement('span');
+                        text.style.whiteSpace = 'normal';
+                        text.style.wordWrap = 'break-word';
+                        text.style.width = 'calc(100% - 10px)';
+                        text.style.textAlign = 'center';
+                        text.textContent = `${getShortName(event.event_name)}/${resAbbrevRoom}/${resAbbrevInst}`;
+                        eventBlock.appendChild(text);
+                        container.appendChild(eventBlock);
+                    });
+                });
+            }
+
+            async function updateActivities(month) {
+                // Compute the query range for the selected month.
+                const firstDayOfMonth = new Date(month + '-01');
+                // Start: 7 days before the month.
+                const rawQueryStart = new Date(firstDayOfMonth);
+                rawQueryStart.setDate(rawQueryStart.getDate() - 7);
+                // End: 7 days after the first day of next month.
+                const nextMonth = new Date(firstDayOfMonth);
+                nextMonth.setMonth(nextMonth.getMonth() + 1);
+                const queryEnd = new Date(nextMonth);
+                queryEnd.setDate(queryEnd.getDate() + 7);
+
+                // Adjust rawQueryStart to the Monday of that week.
+                const adjustedStart = new Date(rawQueryStart);
+                let day = adjustedStart.getDay();
+                if (day === 0) day = 7;
+                adjustedStart.setDate(adjustedStart.getDate() - (day - 1));
+
+                const start = formatDateForAccess(formatDate(adjustedStart));
+                const end = formatDateForAccess(formatDate(queryEnd));
+                //console.log("Query range:", start, end);
+
+                // Call the API via preload.js.
+                const events = await window.api.getMonthlySchedulle(start, end);
+                //console.log("Retrieved events:", events);
+
+                // Group returned rows by event_id.
+                const groupedEvents = {};
+                events.forEach(row => {
+                    const eventId = row.event_id;
+                    if (!groupedEvents[eventId]) {
+                        groupedEvents[eventId] = {
+                            event_id: row.event_id,
+                            event_name: row.event_name,
+                            event_start_date: row.event_start_date,
+                            event_end_date: row.event_end_date,
+                            resources: []
+                        };
+                    }
+                    groupedEvents[eventId].resources.push({
+                        resource_category_id: row.resource_category_id,
+                        resource_name: row.resource_name
+                    });
+                });
+                const eventsArray = Object.values(groupedEvents);
+                //console.log('Grouped events: ', eventsArray);
+
+                // Compute total days from adjustedStart to queryEnd.
+                const totalDays = Math.ceil((queryEnd - adjustedStart) / (1000 * 60 * 60 * 24));
+                buildWeekContainers(adjustedStart, totalDays);
+                updateCalendarEvents(eventsArray);
+            }
+
+            async function updateHolidays(month) {
+                // Compute the query range for the selected month.
+                const firstDayOfMonth = new Date(month + '-01');
+                // Start: 7 days before the month.
+                const rawQueryStart = new Date(firstDayOfMonth);
+                rawQueryStart.setDate(rawQueryStart.getDate() - 7);
+                // End: 7 days after the first day of next month.
+                const nextMonth = new Date(firstDayOfMonth);
+                nextMonth.setMonth(nextMonth.getMonth() + 1);
+                const queryEnd = new Date(nextMonth);
+                queryEnd.setDate(queryEnd.getDate() + 7);
+
+                // Adjust rawQueryStart to the Monday of that week.
+                const adjustedStart = new Date(rawQueryStart);
+                let day = adjustedStart.getDay();
+                if (day === 0) day = 7;
+                adjustedStart.setDate(adjustedStart.getDate() - (day - 1));
+
+                const start = formatDateForAccess(formatDate(adjustedStart));
+                const end = formatDateForAccess(formatDate(queryEnd));
+                //console.log("Query range:", start, end);
+
+                // Call the API via preload.js.
+                const holidays = await window.api.getHoliday(start, end);
+                //console.log("Retrieved holidays:", holidays);
+
+                // Get the container and clear its contents (optional).
+                const holidayContainer = document.querySelector('.holidays');
+                holidayContainer.innerHTML = "";  // Clear previous holidays
+
+
+
+                const holidayMessages = document.createElement('div');
+                holidayMessages.classList.add('holiday-container');
+                holidayMessages.style.display = 'block';
+                holidayMessages.style.marginLeft = '50px';
+
+                const holidayTitle = document.createElement('h4');
+                holidayTitle.style.marginTop = '5px';
+                holidayTitle.style.marginBottom = '5px';
+                const lang = localStorage.getItem('language');
+                let title;
+                switch (lang) {
+                    case 'en':
+                        title = "Holidays for the period: ";
+                        break;
+                    case 'es':
+                        title = "Feriados en el periodo: ";
+                        break;
+                    case 'pt':
+                        title = "Férias no periodo: ";
+                        break;
+                    default:
+                        title = "Holidays for the period: ";
+                        break;
+                }
+                holidayTitle.innerHTML = title;
+                holidayMessages.appendChild(holidayTitle);
+
+                // Iterate over holidays and create a paragraph for each.
+                holidays.forEach(row => {
+                    const message = `Holiday: ${row.holiday}, Start Date: ${formatDate(row.start_date)}, End Date: ${formatDate(row.end_date)}`;
+                    const p = document.createElement('p');
+                    p.style.marginBottom = '5px';
+                    p.style.marginTop = '5px';
+                    p.textContent = message;
+                    holidayMessages.appendChild(p);
+                });
+
+                // Append the holidayMessages container to the holidayContainer.
+                holidayContainer.appendChild(holidayMessages);
+            }
+
+            async function updateStatusTable(month) {
+                // Compute the query range for the selected month.
+                const firstDayOfMonth = new Date(month + '-01');
+                // Start: 7 days before the month.
+                const rawQueryStart = new Date(firstDayOfMonth);
+                rawQueryStart.setDate(rawQueryStart.getDate() - 7);
+                // End: 7 days after the first day of next month.
+                const nextMonth = new Date(firstDayOfMonth);
+                nextMonth.setMonth(nextMonth.getMonth() + 1);
+                const queryEnd = new Date(nextMonth);
+                queryEnd.setDate(queryEnd.getDate() + 7);
+
+                // Adjust rawQueryStart to the Monday of that week.
+                const adjustedStart = new Date(rawQueryStart);
+                let day = adjustedStart.getDay();
+                if (day === 0) day = 7;
+                adjustedStart.setDate(adjustedStart.getDate() - (day - 1));
+
+                const start = formatDateForAccess(formatDate(adjustedStart));
+                const end = formatDateForAccess(formatDate(queryEnd));
+                //console.log("Query range:", start, end);
+
+                // Call the API via preload.js.
+                const statusData = await window.api.getStatusTableData(start, end);
+                //console.log("Retrieved events:", statusData);
+
+                const statusDiv = document.querySelector('.tableContent');
+                statusDiv.innerHTML = '';
+
+                const columnsToDisplay = ['event_name', 'event_start_date', 'event_end_date', 'event_status'];
+
+                statusData.forEach(rowData => {
+                    const tr = document.createElement('tr');
+
+                    columnsToDisplay.forEach(key => {
+                        const td = document.createElement('td');
+                        if (key === 'event_start_date' || key === 'event_end_date') {
+                            td.textContent = rowData[key].split('T')[0] || '';
+                            tr.appendChild(td);
+                        } else {
+                            td.textContent = rowData[key] || ''; // Fallback to empty string if key is missing
+                            tr.appendChild(td);
+                        }
+                    });
+
+                    if (rowData.required_participants !== undefined && rowData.inscribed_participants !== undefined) {
+                        if (Number(rowData.inscribed_participants) < Number(rowData.required_participants)) {
+                            const td = document.createElement('td');
+                            td.textContent = "Participants below minimum";
+                            td.style.color = 'red';
+                            tr.appendChild(td);
+                        } else {
+                            // Optionally, you can add an empty cell if no message is needed.
+                            const td = document.createElement('td');
+                            td.textContent = "Reached";
+                            td.style.color = 'green';
+                            tr.appendChild(td);
+                        }
+                    } else {
+                        // If the keys don't exist, you might still want to add a placeholder cell.
+                        const td = document.createElement('td');
+                        td.textContent = "";
+                        tr.appendChild(td);
+                    }
+
+                    statusDiv.appendChild(tr);
+                })
+
+            };
+
+        </script>
+
+    </body>
+</body>
+
+</html>
