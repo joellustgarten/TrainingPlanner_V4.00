@@ -128,3 +128,22 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# ---- Electron packaging artifacts ----
+# ignore the packaged binaries
+*.exe
+*.app/
+*.dmg
+*.zip
+*.AppImage
+
+# electron-builder / electron-forge output
+dist/
+out/
+release/
+
+# Mac swing‐app
+.DS_Store
+
+# Logs
+*.log

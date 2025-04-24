@@ -34,8 +34,6 @@ app.on('ready', () => {
 
   mainWindow.loadFile(path.join(__dirname, '/html/index.html'));
 
-  // Optionally open the DevTools
-  //mainWindow.webContents.openDevTools();
 });
 
 
@@ -60,7 +58,6 @@ ipcMain.on('open-popup', () => {
     }
   });
 
-  //popup.webContents.openDevTools();
 
   popup.loadFile(path.join(__dirname, 'html/schedulle.html'));
 
@@ -82,11 +79,9 @@ ipcMain.on('open-popup', () => {
  */
 ipcMain.handle('db-getUserData', async (event, userCode) => {
   try {
-    //console.log('Fetching user data for:', userCode);
     const user = await db.getUserData(userCode);
     return user;
   } catch (error) {
-    //console.error('main.js error in db-getUserData:', error);
     return { success: false, message: error.message };
   }
 });
@@ -102,9 +97,7 @@ ipcMain.handle('db-getUserData', async (event, userCode) => {
  * @param {none}
  */
 ipcMain.handle('db-getTrainingData', async (event) => {
-  //console.log('db-getTrainingData handler invoked');
   try {
-    //console.log('Fetching training data');
     const training = await db.getTrainingData();
     return training;
   } catch (error) {
@@ -142,7 +135,7 @@ ipcMain.handle('db-getReservedResources', async (event, start_date, end_date) =>
 ipcMain.handle('db-createEvent', async (event, eventData, user) => {
   try {
     const result = await db.createEvent(eventData, user);
-    return result; // Return the result back to the renderer
+    return result; 
   } catch (error) {
     log.error('Error in db-createEvent IPC handler:', error);
     return { success: false, message: "An unexpected error occurred during event creation." };
@@ -174,9 +167,7 @@ ipcMain.handle('db-getEventsData', async (event, startDate, endDate) => {
 * @param {startDate, endDate}
 */
 ipcMain.handle('db-getUpdateEventData', async (event) => {
-  //console.log('db-getTrainingData handler invoked');
   try {
-    //console.log('Fetching training data');
     const updateEvent = await db.getUpdateEventData();
     return updateEvent;
   } catch (error) {
@@ -209,13 +200,10 @@ ipcMain.handle('db-getEventResources', async (event, eventId) => {
 * @param {}
 */
 ipcMain.handle('db-getEventRoomData', async (event) => {
-  //console.log('db-getEventRoomData handler invoked');
   try {
-    //console.log('Fetching event room data');
     const eventRoom = await db.getEventRoomData();
     return eventRoom;
   } catch (error) {
-    //console.error('main.js error in db-getEventRoomData:', error);
     return { success: false, message: error.message };
   }
 });
@@ -228,13 +216,10 @@ ipcMain.handle('db-getEventRoomData', async (event) => {
 * @param {}
 */
 ipcMain.handle('db-getEventTrainerData', async (event) => {
-  //console.log('db-getEventTrainerData handler invoked');
   try {
-    //console.log('Fetching event trainer data');
     const eventTrainer = await db.getEventTrainerData();
     return eventTrainer;
   } catch (error) {
-    //console.error('main.js error in db-getEventTrainerData:', error);
     return { success: false, message: error.message };
   }
 });
@@ -247,13 +232,10 @@ ipcMain.handle('db-getEventTrainerData', async (event) => {
 * @param {}
 */
 ipcMain.handle('db-getEventVehicleData', async (event) => {
-  //console.log('db-getEventVehicleData handler invoked');
   try {
-    //console.log('Fetching event vehicle data');
     const eventVehicle = await db.getEventVehicleData();
     return eventVehicle;
   } catch (error) {
-    //console.error('main.js error in db-getEventVehicleData:', error);
     return { success: false, message: error.message };
   }
 });
@@ -266,13 +248,10 @@ ipcMain.handle('db-getEventVehicleData', async (event) => {
 * @param {}
 */
 ipcMain.handle('db-getEventEquipmentData', async (event) => {
-  //console.log('db-getEventEquipmentData handler invoked');
   try {
-    //console.log('Fetching event equipment data');
     const eventEquipment = await db.getEventEquipmentData();
     return eventEquipment;
   } catch (error) {
-    //console.error('main.js error in db-getEventEquipmentData:', error);
     return { success: false, message: error.message };
   }
 });
@@ -285,13 +264,10 @@ ipcMain.handle('db-getEventEquipmentData', async (event) => {
 * @param {}
 */
 ipcMain.handle('db-getEventMultimediaData', async (event) => {
-  //console.log('db-getEventMultimediaData handler invoked');
   try {
-    //console.log('Fetching event multimedia data');
     const eventMultimedia = await db.getEventMultimediaData();
     return eventMultimedia;
   } catch (error) {
-    //console.error('main.js error in db-getEventMultimediatData:', error);
     return { success: false, message: error.message };
   }
 });
@@ -531,13 +507,10 @@ ipcMain.handle('db-getWorkstationData', async (event, date) => {
 * @param {data} input
 */
 ipcMain.handle('db-updateResource', async (event, data) => {
-  //console.log('db-updateResource handler invoked with data:', data);
   try {
-    //console.log('Updating resource status for:', data);
     const result = await db.updateResource(data);
     return { success: true, message: 'Update successful', data: result };
   } catch (error) {
-    //console.error('main.js error in db-updateResource:', error);
     return { success: false, message: error.message };
   }
 });
@@ -568,7 +541,7 @@ ipcMain.handle('db-getResourceDataByCategory', async (event, cat) => {
 ipcMain.handle('db-disableResource', async (event, resourceId) => {
   try {
     const result = await db.disableResource(resourceId);
-    return result; // Return the result back to the renderer
+    return result; 
   } catch (error) {
     console.error('Error in db-disableResource IPC handler:', error);
     return { success: false, message: "An unexpected error occurred during disabling resource." };
@@ -586,7 +559,7 @@ ipcMain.handle('db-disableResource', async (event, resourceId) => {
 ipcMain.handle('db-createResourceUnified', async (event, resourceType, data) => {
   try {
     const result = await db.createResourceUnified(resourceType, data);
-    return result; // { success: true, message: '...' }
+    return result; 
   } catch (error) {
     return { success: false, message: error.message };
   }
