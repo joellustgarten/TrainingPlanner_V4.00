@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta name="description"
+        content="Author: Joel Lustgarten, Organization: Technical training center, Area: MA-AA/TSS2-LA, Company: Robert Bosch Ltda., Country: Brazil, Content: Technical training material" />
+    <meta name="google-site-verification" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="all" />
+    <meta name="googlebot" content="noarchive" />
+    <meta name="googlebot" content="notranslate" />
+    <meta name="google" content="nopagereadaloud" />
+    <meta http-equiv="imagetoolbar" content="no" />
+    <meta name="rating" content="general" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta name="copyright" content="© Robert Bosch Ltda." />
+    <meta name="keywords" content="Bosch, Technical training, Techical training center, Mechanics" />
+    <link rel="icon" type="image/x-icon" href="../assets/icons/favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="../css/main.css" />
+    <title>CTA | Training Planner</title>
+</head>
+<style>
+    .background-wrapper {
+        position: relative;
+        height: auto;
+        min-height: 100vh;
+    }
+
+    .preview-single {
+        align-items: center;
+        box-sizing: border-box;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .component-preview__details {
+        display: block;
+        width: 100%;
+        overflow-y: auto;
+        padding: 2rem;
+    }
+
+    .notification-button {
+        cursor: pointer;
+    }
+
+    .notification-button:hover {
+        background-color: var(--minor-signal-neutral__enabled__fill__hovered);
+
+    }
+
+    .notification-button:active {
+        background-color: var(--minor-signal-neutral__enabled__fill__pressed);
+    }
+
+    /* Styling for notifications */
+    #notification-container {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        z-index: 1000;
+        /* By default hidden */
+        display: none;
+    }
+
+    #notification-container.info {
+        background-color: #2196F3;
+        color: #fff;
+    }
+
+    #notification-container.success {
+        background-color: #4CAF50;
+        color: #fff;
+    }
+
+    #notification-container.error {
+        background-color: #F44336;
+        color: #fff;
+    }
+
+    #notification-container.loading {
+        background-color: #555;
+        color: #fff;
+    }
+</style>
+
+<body>
+    <div class="wrapper -light-mode" style="width: 100vw; height: 100vh">
+        <div class="background-wrapper -primary">
+            <header class="o-minimal-header -primary">
+                <div class="o-minimal-header__supergraphic"></div>
+                <div class="o-minimal-header__top">
+                    <div class="o-minimal-header__burger">
+                        <button type="button" class="a-button a-button--integrated -without-label"
+                            aria-label="Side Navigation">
+                            <i class="a-icon a-button__icon ui-ic-menu"></i>
+                        </button>
+                    </div>
+                    <div class="o-minimal-header__title" data-i18n="manage-resource-title"></div>
+                    <ul class="o-minimal-header__actions">
+                        <li>
+                            <button type="button" class="a-button a-button--integrated -without-label" style="
+                            align-items: center;
+                            text-align: center;
+                            margin-right: 30px;
+                          " id="userButton">
+                                <i class="a-icon a-button__icon boschicon-bosch-ic-my-brand-frame"></i>
+                                <span style="white-space: nowrap">User:
+                                    <span style="white-space: nowrap" id="username_display"></span></span>
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="a-button a-button--integrated -without-label" id="logoutButton"
+                                style="
+                            align-items: center;
+                            text-align: center;
+                            margin-right: 30px;
+                          ">
+                                <i class="a-icon a-button__icon boschicon-bosch-ic-logout"></i>
+                                <span style="white-space: nowrap">Log out</span>
+                            </button>
+                        </li>
+                    </ul>
+                    <a href="/" class="o-minimal-header__logo" aria-label="Bosch Logo">
+                        <svg width="108px" height="24px" viewBox="0 0 108 24" xmlns="http://www.w3.org/2000/svg">
+                            <path id="bosch-logo-text"
+                                d="M78.19916,15.03735c0,3.46057-3.1618,5.1535-6.12445,5.1535c-3.41083,0-5.17847-1.29462-6.57263-2.96265 l2.51453-2.48962c1.07056,1.36926,2.46472,2.0415,4.0083,2.0415c1.29462,0,2.14105-0.62244,2.14105-1.56848 c0-0.99585-0.77179-1.31952-2.83813-1.74274l-0.54773-0.12451c-2.48962-0.52283-4.53113-1.91699-4.53113-4.75519 c0-3.112,2.53943-4.97925,5.87549-4.97925c2.8382,0,4.65564,1.21991,5.77594,2.48962l-2.46472,2.43988 c-0.82831-0.91748-2.00061-1.44946-3.23651-1.46893c-0.89624,0-1.91699,0.42328-1.91699,1.46893 c0,0.97095,1.07056,1.31946,2.41492,1.59332l0.54773,0.12451C75.51038,10.73029,78.24896,11.42737,78.19916,15.03735z  M64.80499,11.92529c0,4.65558-2.66394,8.29047-7.26971,8.29047c-4.58093,0-7.26971-3.63489-7.26971-8.29047 c0-4.63068,2.68878-8.29047,7.26971-8.29047C62.14105,3.63483,64.80499,7.29462,64.80499,11.92529z M60.92114,11.92529 c0-2.46472-1.1452-4.48132-3.38586-4.48132s-3.36102,1.9917-3.36102,4.48132s1.12036,4.50623,3.36102,4.50623 S60.92114,14.43982,60.92114,11.92529z M87.06226,16.43152c-1.74274,0-3.56018-1.44397-3.56018-4.60583 c0-2.81323,1.69293-4.38171,3.46057-4.38171c1.39423,0,2.21576,0.64728,2.8631,1.76764l3.18671-2.11621 c-1.59338-2.41492-3.48547-3.43567-6.09961-3.43567c-4.78009,0-7.36926,3.70953-7.36926,8.19086 c0,4.70544,2.86304,8.39008,7.31946,8.39008c3.13696,0,4.63074-1.09546,6.24902-3.43567l-3.21167-2.16602 C89.25311,15.68463,88.55603,16.43152,87.06226,16.43152z M48.97095,15.46057c0,2.66388-2.43982,4.40662-4.92944,4.40662H35.9502 V4.0332h7.44397c2.8382,0,4.9046,1.44397,4.9046,4.35681c0.01666,1.43036-0.85675,2.72058-2.19086,3.23651 C46.10791,11.65143,48.97095,12.29877,48.97095,15.46057z M39.80914,10.25726h2.83813 c0.02155,0.00134,0.04309,0.00226,0.06464,0.00269c0.81476,0.01575,1.48804-0.6319,1.50385-1.44666 c0.00342-0.0567,0.00342-0.11353,0-0.17017c-0.047-0.77802-0.71576-1.37061-1.49377-1.32361h-2.88794L39.80914,10.25726z  M44.76349,14.98755c0-0.92114-0.67218-1.54358-2.09131-1.54358h-2.81323v3.11206h2.88794 C43.91699,16.55603,44.76349,16.13275,44.76349,14.98755z M103.64313,4.03326v5.82568H98.8382V4.03326h-4.15771v15.83398h4.15771 v-6.24896h4.80493v6.24896h4.15771V4.03326H103.64313z" />
+                            <path id="bosch-logo-anker"
+                                d="M12,0C5.37256,0,0,5.37256,0,12c0,6.62738,5.37256,12,12,12s12-5.37262,12-12C23.99646,5.37402,18.62598,0.00354,12,0z  M12,22.87964C5.99133,22.87964,1.12036,18.00867,1.12036,12S5.99133,1.1203,12,1.1203S22.87964,5.99133,22.87964,12 C22.87354,18.0061,18.0061,22.87354,12,22.87964z M19.50293,7.05475c-0.66852-1.01306-1.53552-1.88-2.54858-2.54852h-0.82159 v4.10785H7.89209V4.50623H7.04565c-4.13873,2.73114-5.27972,8.30029-2.54858,12.43896 c0.66852,1.01306,1.53552,1.88007,2.54858,2.54858h0.84644v-4.10791h8.24066v4.10791h0.82159 C21.09308,16.76257,22.23407,11.19348,19.50293,7.05475z M6.74689,17.87549c-3.24493-2.88354-3.5379-7.85168-0.65436-11.09668 c0.20508-0.23077,0.42358-0.44928,0.65436-0.65436V17.87549z M16.13275,14.24066H7.89209V9.73444h8.24066V14.24066z  M17.84827,17.25549c-0.18768,0.2088-0.38629,0.40747-0.59515,0.59509v-2.48962V8.61407V6.12445 C20.49121,9.03387,20.75763,14.0174,17.84827,17.25549z" />
+                        </svg>
+                    </a>
+                    <div class="o-minimal-header__falafel">
+                        <nav class="o-context-menu" aria-label="Context Menu Navigation undefined" aria-hidden="false">
+                            <button type="button"
+                                class="a-button a-button--integrated -without-label o-context-menu__trigger"
+                                data-frok-action="open" aria-haspopup="true" aria-label="Open Context Menu">
+                                <i class="a-icon a-button__icon boschicon-bosch-ic-options"></i>
+                            </button>
+                            <button type="button"
+                                class="a-button a-button--integrated -without-label o-context-menu__trigger"
+                                data-frok-action="close" aria-haspopup="false" aria-label="Close Context Menu">
+                                <i class="a-icon a-button__icon boschicon-bosch-ic-close"></i>
+                            </button>
+                            <div class="m-popover">
+                                <div class="a-box -floating">
+                                    <div class="m-popover__content">
+                                        <ul class="m-menu-group" role="menubar" aria-orientation="vertical">
+                                            <li class="a-menu-item" role="none">
+                                                <div class="a-menu-item__wrapper">
+                                                    <button href="#" role="menuitem" class="a-menu-item__link"
+                                                        id="smallLogoutButton">
+                                                        <i class="a-icon boschicon-bosch-ic-my-brand-frame"></i>
+                                                        <span class="a-menu-item__label">Log out</span>
+                                                    </button>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <nav class="m-side-navigation -contrast" aria-label="Side Navigation" aria-hidden="false">
+                <div class="m-side-navigation__header">
+                    <div class="m-side-navigation__header__label -size-l highlight">
+                        Training Planner V1.00
+                    </div>
+                    <button type="button"
+                        class="a-button a-button--integrated -without-label m-side-navigation__header__trigger -open"
+                        aria-haspopup="false" aria-label="Open Side Navigation" tabindex="0">
+                        <i class="a-icon a-button__icon boschicon-bosch-ic-list-view-mobile"></i>
+                    </button>
+                    <button type="button"
+                        class="a-button a-button--integrated -without-label m-side-navigation__header__trigger -close"
+                        aria-haspopup="false" aria-label="Close Side Navigation" tabindex="-1">
+                        <i class="a-icon a-button__icon boschicon-bosch-ic-close"></i>
+                    </button>
+                </div>
+                <ul class="m-menu-group" role="menubar" aria-orientation="vertical">
+                    <li class="a-menu-item" role="none">
+                        <div class="a-menu-item__wrapper">
+                            <a href="#" role="menuitem" class="a-menu-item__link" aria-disabled="false"
+                                data-target="index.html"">
+                        <i class=" a-icon boschicon-bosch-ic-desktop-application-3d"></i>
+                                <span class="a-menu-item__label">Home</span>
+                            </a>
+                        </div>
+                    </li>
+                    <li class="a-menu-item" role="none">
+                        <div class="a-menu-item__wrapper">
+                            <button type="button" role="menuitem" class="a-menu-item__group" aria-disabled="false"
+                                aria-controls="group-id-1" aria-label="open group">
+                                <i class="a-icon boschicon-bosch-ic-calendar-date-single"></i>
+                                <span class="a-menu-item__label" data-i18n="event-menu"></span>
+                                <i class="a-icon ui-ic-down-small"></i>
+                            </button>
+                        </div>
+                        <ul id="group-id-1" class="m-menu-group__group" role="menu">
+                            <li class="a-menu-item -indent" role="none">
+                                <div class="a-menu-item__wrapper">
+                                    <a href="#" role="menuitem" class="a-menu-item__link" aria-disabled="false"
+                                        data-target="view_event.html">
+                                        <span class="a-menu-item__label" data-i18n="event-menu-1"></span>
+                                    </a>
+                                </div>
+                            </li>
+                            <li class="a-menu-item -disabled -indent" role="none">
+                                <div class="a-menu-item__wrapper">
+                                    <a href="#" role="menuitem" class="a-menu-item__link" aria-disabled="true"
+                                        tabindex="-1" data-target="new_event.html">
+                                        <span class="a-menu-item__label" data-i18n="event-menu-2"></span>
+                                    </a>
+                                </div>
+                            </li>
+                            <li class="a-menu-item -disabled -indent" role="none">
+                                <div class="a-menu-item__wrapper">
+                                    <a href="#" role="menuitem" class="a-menu-item__link" aria-disabled="false"
+                                        data-target="update_event.html">
+                                        <span class="a-menu-item__label" data-i18n="event-menu-3"></span>
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="a-menu-item" role="none">
+                        <div class="a-menu-item__wrapper">
+                            <button type="button" role="menuitem" class="a-menu-item__group" aria-disabled="true"
+                                tabindex="-1" aria-controls="group-id-2" aria-label="open group">
+                                <i class="a-icon boschicon-bosch-ic-material-list"></i>
+                                <span class="a-menu-item__label" data-i18n="resources-menu"></span>
+                                <i class="a-icon ui-ic-down-small"></i>
+                            </button>
+                        </div>
+                        <ul id="group-id-2" class="m-menu-group__group" role="menu">
+                            <li class="a-menu-item -indent" role="none">
+                                <div class="a-menu-item__wrapper">
+                                    <a href="#" role="menuitem" class="a-menu-item__link" aria-disabled="false"
+                                        data-target="view_resources.html">
+                                        <span class="a-menu-item__label" data-i18n="resources-menu-1"></span>
+                                    </a>
+                                </div>
+                            </li>
+                            <li class="a-menu-item -disabled -indent" role="none">
+                                <div class="a-menu-item__wrapper">
+                                    <a href="#" role="menuitem" class="a-menu-item__link" aria-disabled="false"
+                                        data-target="new_resources.html">
+                                        <span class="a-menu-item__label" data-i18n="resources-menu-2"></span>
+                                    </a>
+                                </div>
+                            </li>
+                            <li class="a-menu-item -disabled -indent" role="none">
+                                <div class="a-menu-item__wrapper">
+                                    <a href="#" role="menuitem" class="a-menu-item__link" aria-disabled="false"
+                                        data-target="update_resources.html">
+                                        <span class="a-menu-item__label" data-i18n="resources-menu-3"></span>
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="a-menu-item" role="none">
+                        <div class="a-menu-item__wrapper">
+                            <button type="button" role="menuitem" class="a-menu-item__group" aria-disabled="false"
+                                aria-controls="group-id-3" aria-label="open group">
+                                <i class="a-icon boschicon-bosch-ic-message"></i>
+                                <span class="a-menu-item__label" data-i18n="message-menu"></span>
+                                <i class="a-icon ui-ic-down-small"></i>
+                            </button>
+                        </div>
+                        <ul id="group-id-3" class="m-menu-group__group" role="menu">
+                            <li class="a-menu-item -disabled -indent" role="none">
+                                <div class="a-menu-item__wrapper">
+                                    <a href="#" role="menuitem" class="a-menu-item__link" aria-disabled="false"
+                                        data-target="view_messages.html">
+                                        <span class="a-menu-item__label" data-i18n="message-menu-1"></span>
+                                    </a>
+                                </div>
+                            </li>
+                            <li class="a-menu-item -indent" role="none">
+                                <div class="a-menu-item__wrapper">
+                                    <a href="#" role="menuitem" class="a-menu-item__link" aria-disabled="false"
+                                        data-target="reminders.html">
+                                        <span class="a-menu-item__label" data-i18n="message-menu-2"></span>
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="a-menu-item" role="none">
+                        <div class="a-menu-item__wrapper">
+                            <a href="#" role="menuitem" class="a-menu-item__link" aria-disabled="false"
+                                data-target="settings.html">
+                                <i class="a-icon boschicon-bosch-ic-settings"></i>
+                                <span class="a-menu-item__label" data-i18n="settings-link"></span>
+                            </a>
+                        </div>
+                    </li>
+                    <li class="a-menu-item -disabled" role="none">
+                        <div class="a-menu-item__wrapper">
+                            <a href="#" role="menuitem" class="a-menu-item__link" aria-disabled="true" tabindex="-1"
+                                data-target="statistic.html">
+                                <i class="a-icon boschicon-bosch-ic-chart-line"></i>
+                                <span class="a-menu-item__label" data-i18n="statistics-link"></span>
+                            </a>
+                        </div>
+                    </li>
+                    <li class="a-menu-item" role="none">
+                        <div class="a-menu-item__wrapper">
+                            <a href="#" role="menuitem" class="a-menu-item__link" aria-disabled="false"
+                                data-target="version.html"">
+                        <i class=" a-icon boschicon-bosch-ic-alert-info"></i>
+                                <span class="a-menu-item__label" data-i18n="version-link"></span>
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+            <div class="e-container">
+                <main style="padding-top: 6rem">
+                    <div class="preview-single">
+                        <!-- Date display container -->
+                        <div class="a-notification -neutral notification-button" id="dateStatusButton" tabindex="0"
+                            aria-pressed="false" role="button">
+                            <i class="a-icon boschicon-bosch-ic-calendar-clock"></i>
+                            <div id="notification-label-id-bar-with-icon-neutral" class="a-notification__content">
+                                <!-- Content to be dynamically updated -->
+                            </div>
+                        </div>
+
+                        <!-- Upper tab index -->
+                        <div class="a-tab-navigation__wrapper" style="width: 100%; margin-left: 2rem;">
+                            <button type="button"
+                                class="a-button a-button--integrated -without-label a-tab-navigation__button-left"
+                                aria-label="scroll to left">
+                                <i class="a-icon a-button__icon ui-ic-left-small"></i>
+                            </button>
+                            <ol class="a-tab-navigation" style="justify-content: space-between;" role="tablist">
+                                <li class="a-tab-navigation__item" role="none">
+                                    <button type="button" class="a-tab-navigation__tab -selected" tabindex="0"
+                                        role="tab" aria-controls="tab-1" id="tab-1">
+                                        <span class="a-tab-navigation__tab-content">
+                                            <span class="a-tab-navigation__label" data-i18n="vr-areas"></span>
+                                        </span>
+                                    </button>
+                                </li>
+                                <li class="a-tab-navigation__item" role="none">
+                                    <button type="button" class="a-tab-navigation__tab" data-frok-tab-identifier="2"
+                                        tabindex="0" role="tab" aria-controls="tab-2" id="tab-2">
+                                        <span class="a-tab-navigation__tab-content">
+                                            <span class="a-tab-navigation__label" data-i18n="vr-trainers"></span>
+                                        </span>
+                                    </button>
+                                </li>
+                                <li class="a-tab-navigation__item" role="none">
+                                    <button type="button" class="a-tab-navigation__tab" data-frok-tab-identifier="3"
+                                        tabindex="0" role="tab" aria-controls="tab-3" id="tab-3">
+                                        <span class="a-tab-navigation__tab-content">
+                                            <span class="a-tab-navigation__label" data-i18n="vr-vehicles"></span>
+                                        </span>
+                                    </button>
+                                </li>
+                                <li class="a-tab-navigation__item" role="none">
+                                    <button type="button" class="a-tab-navigation__tab" data-frok-tab-identifier="4"
+                                        tabindex="0" role="tab" aria-controls="tab-4" id="tab-4">
+                                        <span class="a-tab-navigation__tab-content">
+                                            <span class="a-tab-navigation__label" data-i18n="vr-equipment"></span>
+                                        </span>
+                                    </button>
+                                </li>
+                                <li class="a-tab-navigation__item" role="none">
+                                    <button type="button" class="a-tab-navigation__tab" data-frok-tab-identifier="5"
+                                        tabindex="0" role="tab" aria-controls="tab-5" id="tab-5">
+                                        <span class="a-tab-navigation__tab-content">
+                                            <span class="a-tab-navigation__label" data-i18n="vr-multimedia"></span>
+                                        </span>
+                                    </button>
+                                </li>
+                                <li class="a-tab-navigation__item" role="none">
+                                    <button type="button" class="a-tab-navigation__tab" data-frok-tab-identifier="6"
+                                        tabindex="0" role="tab" aria-controls="tab-6" id="tab-6" aria-pressed="true">
+                                        <span class="a-tab-navigation__tab-content">
+                                            <span class="a-tab-navigation__label" data-i18n="vr-workstations"></span>
+                                        </span>
+                                    </button>
+                                </li>
+                                <li class="a-tab-navigation__item" role="none">
+                                    <button type="button" class="a-tab-navigation__tab" data-frok-tab-identifier="7"
+                                        tabindex="0" role="tab" aria-controls="tab-7" id="tab-7" aria-pressed="true">
+                                        <span class="a-tab-navigation__tab-content">
+                                            <span class="a-tab-navigation__label">Others</span>
+                                        </span>
+                                    </button>
+                                </li>
+                            </ol>
+                            <button type="button"
+                                class="a-button a-button--integrated -without-label a-tab-navigation__button-right"
+                                aria-label="scroll to right">
+                                <i class="a-icon a-button__icon ui-ic-right-small"></i>
+                            </button>
+                        </div>
+
+                        <!-- Tab containers -->
+                        <div class="component-preview__details" data-tab-Name="tab-1" tabindex="0">
+                            <div class="m-details-group" style="margin-left: 2rem;">
+                                <!-- Content will be filled dynamically -->
+                            </div>
+                        </div>
+                        <div class="component-preview__details" data-tab-Name="tab-2" tabindex="1">
+                            <div class="m-details-group" style="margin-left: 2rem;">
+                                <!-- Content will be filled dynamically -->
+                            </div>
+                        </div>
+                        <div class="component-preview__details" data-tab-Name="tab-3" tabindex="2">
+                            <div class="m-details-group" style="margin-left: 2rem;">
+                                <!-- Content will be filled dynamically -->
+                            </div>
+                        </div>
+                        <div class="component-preview__details" data-tab-Name="tab-4" tabindex="3">
+                            <div class="m-details-group" style="margin-left: 2rem;">
+                                <!-- Content will be filled dynamically -->
+                            </div>
+                        </div>
+                        <div class="component-preview__details" data-tab-Name="tab-5" tabindex="4">
+                            <div class="m-details-group" style="margin-left: 2rem;">
+                                <!-- Content will be filled dynamically -->
+                            </div>
+                        </div>
+                        <div class="component-preview__details" data-tab-Name="tab-6" tabindex="5">
+                            <div class="m-details-group" style="margin-left: 2rem;">
+                                <!-- Content will be filled dynamically -->
+                            </div>
+                        </div>
+                        <div class="component-preview__details" data-tab-Name="tab-7" tabindex="6">
+                            <div class="m-details-group" style="margin-left: 2rem;">
+                                <!-- Content will be filled dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Date dialog -->
+                        <dialog class="m-dialog -floating-shadow-s -floating" id="date-dialog-info"
+                            aria-labelledby="dialog-default-dialog-without-header-title"
+                            style="margin: auto; width: 400px;">
+                            <div class="m-dialog__content">
+                                <div class="m-dialog__headline">Select status date</div>
+                                <div class="m-dialog__body">
+                                    <div class="m-form-field -quarter">
+                                        <div class="a-text-field">
+                                            <label for="status_date">From:</label>
+                                            <input type="date" id="status-date-input" name="status-date-input"
+                                                autocomplete="off" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="m-dialog__actions">
+                                    <button type="button" class="a-button a-button--primary -without-icon"
+                                        id="dateConfirm">
+                                        <span class="a-button__label" style="padding-right: 0.75rem;">Confirm</span>
+                                    </button>
+                                    <button type="button" class="a-button a-button--secondary -without-icon"
+                                        id="dateCancel">
+                                        <span class="a-button__label">Cancel</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </dialog>
+
+                        <!-- External scripts -->
+                        <script src="../js/script.js"></script>
+                        <script type="module">
+                            import { setLanguage, updateLanguage, setTheme, updateUsernameDisplay, logOut, updateNavMenu, navigationMenu, debounce, getNotificationContainer, showPersistentNotification, hidePersistentNotification, showNotification } from '../js/common.js';
+                            setLanguage();
+                            setTheme();
+                            updateUsernameDisplay();
+                            updateNavMenu();
+                            navigationMenu();
+
+                            document.getElementById('logoutButton').addEventListener('click', logOut);
+                            document.getElementById('smallLogoutButton').addEventListener('click', logOut);
+
+                        </script>
+                        <!-- Main inline script -->
+                        <script>
+                            /* Global variables */
+                            let currentDate = '';
+                            let resourceCache = {}; // Cache for preloaded resource data
+
+                            document.addEventListener('DOMContentLoaded', () => {
+                                initializeDialogs();
+                                updateDateToToday();
+                                initializeTabs();
+                                loadAllResources(currentDate);
+                            });
+
+
+                            //------ HELPER FUNCTIONS FOR VIEW_RSOURCES.HTML---------------------------------------
+
+
+                            /**
+                             * Initialize the date-selection dialog
+                             * 1. Open date dialog.
+                             * 2. Close date dialoga.
+                             * 3. ".
+                             *
+                             * @param {none} input
+                             * @Param{none} Output type:Array
+                             */
+                            function initializeDialogs() {
+                                const dateStatusButton = document.getElementById('dateStatusButton');
+                                const dateDialog = document.getElementById('date-dialog-info');
+                                const confirmDate = document.getElementById('dateConfirm');
+                                const cancelDate = document.getElementById('dateCancel');
+                                const dateInput = document.getElementById('status-date-input');
+                                const dateElement = document.getElementById('notification-label-id-bar-with-icon-neutral');
+
+                                dateStatusButton?.addEventListener('click', () => dateDialog.showModal());
+                                cancelDate?.addEventListener('click', () => dateDialog.close());
+
+                                confirmDate?.addEventListener('click', () => {
+                                    const selectedDate = dateInput.value; // Format: "YYYY-MM-DD"
+                                    console.log('Raw selected date:', selectedDate);
+                                    if (selectedDate) {
+                                        const [year, month, day] = selectedDate.split('-').map(Number);
+                                        const dateObj = new Date(year, month - 1, day);
+                                        const formattedDate = formatDate(dateObj);
+                                        dateElement.textContent = formattedDate;
+                                        currentDate = formattedDate;
+                                        dateDialog.close();
+                                        loadAllResources(currentDate);
+                                    } else {
+                                        showNotification('Please select a date.', 'error');
+                                    }
+                                });
+                            }
+
+                            /**
+                             * Set todays date 
+                             * 1. Shw date on date select button.
+                             * 2. 
+                             * 3. 
+                             *
+                             * @param {none} input
+                             * @Param{none} Output 
+                             */
+                            function updateDateToToday() {
+                                const dateElement = document.getElementById('notification-label-id-bar-with-icon-neutral');
+                                const today = new Date();
+                                const formattedTodayDate = formatDate(today);
+                                dateElement.textContent = formattedTodayDate;
+                                currentDate = formattedTodayDate;
+                            }
+
+                            /**
+                             * Format Date as DD/MM/YYYY
+                             * 1. Format date to present on app
+                             * 2. 
+                             * 3. 
+                             *
+                             * @param {none} input
+                             * @Param{none} Output 
+                             */
+                            function formatDate(dateInput) {
+                                const date = new Date(dateInput);
+                                const day = String(date.getDate()).padStart(2, '0');
+                                const month = String(date.getMonth() + 1).padStart(2, '0');
+                                const year = date.getFullYear();
+                                return `${day}/${month}/${year}`;
+                            }
+
+                            /**
+                             * Format Date as DD/MM/YYYY for ms access CRUD
+                             * 1. Format date to present on app
+                             * 2. 
+                             * 3. 
+                             *
+                             * @param {none} input
+                             * @Param{none} Output 
+                             */
+                            function convertToMSAccessDate(dateStr) {
+                                const [day, month, year] = dateStr.split('/');
+                                return `#${month}/${day}/${year}#`;
+                            }
+
+                            /**
+                            * Initialize tab display
+                            * 1. apply css to tab on click
+                            * 2. 
+                            * 3. 
+                            *
+                            * @param {none} input
+                            * @Param{none} Output 
+                            */
+                            function initializeTabs() {
+                                const tabButtons = document.querySelectorAll('.a-tab-navigation__item');
+                                const tabContents = document.querySelectorAll('.component-preview__details');
+
+                                function selectTab(event) {
+                                    const liElement = event.currentTarget;
+                                    const button = liElement.querySelector('button');
+
+                                    if (button) {
+                                        const tabId = button.id; // Get the button's id
+                                        // Update tab contents
+                                        tabContents.forEach(content => {
+                                            content.style.display = content.getAttribute('data-tab-Name') === tabId ? 'block' : 'none';
+                                        });
+                                        updateActiveTabData(currentDate);
+                                    } else {
+                                        console.error("Button not found");
+                                    }
+                                }
+
+                                tabButtons.forEach(li => li.addEventListener('click', selectTab));
+
+                                if (tabButtons.length > 0) {
+                                    tabButtons[0].click();
+                                }
+                            }
+
+                            /**
+                            *  CRUD to load all resource details to display
+                            * 1. Read data from db for each resource table
+                            * 2. Store data on cache (pseudo)
+                            * 3. 
+                            *
+                            * @param {none} input
+                            * @Param{none} Output 
+                            */
+                            async function loadAllResources(date) {
+                                showPersistentNotification('Loading resources...', 'loading');
+                                try {
+                                    const [rooms, trainers, vehicles, equipment, multimedia, workstations] =
+                                        await Promise.all([
+                                            window.api.getRoomsData(date),
+                                            window.api.getTrainersData(date),
+                                            window.api.getVehicleData(date),
+                                            window.api.getEquipmentData(date),
+                                            window.api.getMultimediaData(date),
+                                            window.api.getWorkstationData(date),
+                                        ]);
+
+                                    resourceCache = {
+                                        rooms: renameKeys(rooms, 'rooms'),
+                                        trainers: renameKeys(trainers, 'trainers'),
+                                        vehicles: renameKeys(vehicles, 'vehicles'),
+                                        equipment: renameKeys(equipment, 'equipments'),
+                                        multimedia: renameKeys(multimedia, 'multimedia'),
+                                        workstations: renameKeys(workstations, 'workstations'),
+                                        // For "Others" tab, assume no data.
+                                        others: [],
+                                    };
+                                    //console.log('Resource Cache:', resourceCache);
+                                    hidePersistentNotification();
+                                    showNotification('Resources loaded.', 'success');
+                                    updateActiveTabData();
+                                } catch (error) {
+                                    console.error('Error loading resources:', error);
+                                    hidePersistentNotification();
+                                    showNotification('Error loading resources. Please try again.', 'error');
+                                }
+                            }
+
+                            /**
+                             *  Render data into the active tab
+                             * 1. Read selected tab id and activate container
+                             * 2. 
+                             * 3. 
+                             *
+                             * @param {none} input
+                             * @Param{none} Output 
+                             */
+                            function updateActiveTabData() {
+                                const activeTab = document.querySelector('.a-tab-navigation__tab.-selected');
+                                const tabId = activeTab ? activeTab.id : null;
+                                if (!tabId) {
+                                    console.warn('No active tab selected.');
+                                    return;
+                                }
+                                let data, resourceType;
+                                switch (tabId) {
+                                    case 'tab-1':
+                                        data = resourceCache.rooms;
+                                        resourceType = 'rooms';
+                                        break;
+                                    case 'tab-2':
+                                        data = resourceCache.trainers;
+                                        resourceType = 'trainers';
+                                        break;
+                                    case 'tab-3':
+                                        data = resourceCache.vehicles;
+                                        resourceType = 'vehicles';
+                                        break;
+                                    case 'tab-4':
+                                        data = resourceCache.equipment;
+                                        resourceType = 'equipments';
+                                        break;
+                                    case 'tab-5':
+                                        data = resourceCache.multimedia;
+                                        resourceType = 'multimedia';
+                                        break;
+                                    case 'tab-6':
+                                        data = resourceCache.workstations;
+                                        resourceType = 'workstations';
+                                        break;
+                                    case 'tab-7':
+                                        data = resourceCache.others;
+                                        resourceType = 'others';
+                                        break;
+                                    default:
+                                        console.warn('No data defined for this tab.');
+                                        return;
+                                }
+                                //console.log(`Populating tab ${tabId} with data:`, data);
+                                const tabContainer = document.querySelector(`[data-tab-Name="${tabId}"]`);
+                                if (tabContainer) {
+                                    populate(tabContainer, data, resourceType);
+                                } else {
+                                    console.error('Tab container not found for', tabId);
+                                }
+                            }
+
+                            /**
+                             *  Populate container with resource details
+                             * 1. assuming the container has a static <div class="m-details-group">.
+                             * 2. clear its content and then populate it.
+                             * 3. 
+                             *
+                             * @param {none} input
+                             * @Param{none} Output 
+                             */
+                            function populate(container, data, resourceType) {
+                                // Look for the existing .m-details-group in the container.
+                                let detailsGroup = container.querySelector('.m-details-group');
+                                if (!detailsGroup) {
+                                    console.error("No .m-details-group found in container:", container);
+                                    return;
+                                }
+                                // Clear its content.
+                                detailsGroup.innerHTML = '';
+
+                                // Ensure data is an array.
+                                if (!Array.isArray(data)) data = [];
+
+                                //console.log(`Inside populate: resourceType = ${resourceType}`, data);
+
+                                const fragment = document.createDocumentFragment();
+
+                                data.forEach((item) => {
+                                    const details = document.createElement('details');
+                                    details.className = 'a-details';
+
+                                    const summary = document.createElement('summary');
+                                    summary.className = 'highlight';
+                                    summary.innerHTML = `<i class="a-icon a-details__icon boschicon-bosch-ic-down" title="arrow down"></i>${item.Name}`;
+
+                                    const content = document.createElement('div');
+                                    content.className = 'content-area';
+                                    content.style.marginTop = '20px';
+                                    content.style.marginLeft = '20px';
+
+                                    const ul = document.createElement('ul');
+                                    ul.className = 'a-list a-list--dot';
+
+                                    Object.entries(item).forEach(([key, value]) => {
+                                        if (displayFields[resourceType] && displayFields[resourceType].includes(key)) {
+                                            // Create the li only if there is a valid value for keys that may be empty.
+                                            if (key === 'Status') {
+                                                const li = document.createElement('li');
+                                                const chipColor = value === 'Active' ? 'green' : 'red';
+                                                li.innerHTML = `
+                                                    <b>Status:&nbsp;</b>
+                                                    <div tabindex="0" class="a-chip" role="button" aria-labelledby="chip-label-id-default"
+                                                    style="height: 1.5rem; background-color: ${chipColor}; color: white">
+                                                    <span id="chip-label-id-default" class="a-chip__label">${value}</span>
+                                                    </div>
+                                                `;
+                                                ul.appendChild(li);
+                                            } else if (key === 'Temporal status') {
+                                                if (item.Status === 'Inactive') return; // Skip temporal status if already inactive.
+                                                const li = document.createElement('li');
+                                                let chipColor;
+                                                if (value === null || value === undefined || value === '') {
+                                                    chipColor = 'green';
+                                                    value = 'Available';
+                                                } else if (value === 'Reserved') {
+                                                    chipColor = 'yellow';
+                                                } else if (value === 'Programmed') {
+                                                    chipColor = 'blue';
+                                                } else {
+                                                    chipColor = 'red';
+                                                }
+                                                li.innerHTML = `
+                                                    <b>Temporal status:&nbsp;</b>
+                                                    <div tabindex="0" class="a-chip" role="button" aria-labelledby="chip-label-id-default"
+                                                    style="height: 1.5rem; background-color: ${chipColor}; color: ${chipColor === 'yellow' ? 'black' : 'white'}">
+                                                    <span id="chip-label-id-default" class="a-chip__label">${value}</span>
+                                                    </div>
+                                                `;
+                                                ul.appendChild(li);
+                                            } else if (key === 'Start date' || key === 'End date') {
+                                                if (value !== null && value !== undefined && value !== '') {
+                                                    const li = document.createElement('li');
+                                                    const formattedDate = formatDate(value);
+                                                    li.innerHTML = `<span style="font-weight: 600;">${key}:</span> ${formattedDate}`;
+                                                    ul.appendChild(li);
+                                                }
+                                            } else if (key !== 'Name') {
+                                                if (value !== null && value !== undefined && value !== '') {
+                                                    const li = document.createElement('li');
+                                                    li.innerHTML = `<span style="font-weight: 600;">${key}:</span> ${value}`;
+                                                    ul.appendChild(li);
+                                                }
+                                            }
+                                        }
+                                    });
+
+                                    content.appendChild(ul);
+
+                                    // Append the status update form (always appended regardless of data).
+                                    const updateStatusDiv = `
+                                        <div class="update_Status" style="width: 90%; margin: 30px auto 20px auto; padding:20px; background-color: lightgrey;">
+                                            <form class="updateForm" onsubmit="updateStatus(event, ${item.resource_id}, ${item.temporal_status_id}, this)">
+                                            <h5 style="margin: 0 0 5px 0;">Update resource Status</h5>
+                                            <p>Update resource Status for ${item.Name} (temporal status: ${item.temporal_status_id ?? 'Not available'})?</p>
+                                            <div class="o-form__row" style="justify-content: space-between;">
+                                                <div class="a-toggle" style="height: 3rem; display: grid; place-items: center;">
+                                                <label>
+                                                    <input class="toggle-update" type="checkbox" role="switch" />
+                                                    <div class="a-toggle__trigger"></div>
+                                                    <span class="a-toggle__label a-toggle__label--left a-toggle__label--right">Update status</span>
+                                                </label>
+                                                </div>
+                                                <div class="m-form-field -quarter">
+                                                <div class="a-dropdown">
+                                                    <label for="updateReason">Update reason</label>
+                                                    <select class="UpdateReason" aria-label="Status update reason">
+                                                    <option value="" selected disabled>Select an option</option>
+                                                    <option value="free">Release free</option>
+                                                    <option value="Holidays">Holidays</option>
+                                                    <option value="Sick leave">Sick leave</option>
+                                                    <option value="Maintenance">Maintenance</option>
+                                                    <option value="Damage">Damage</option>
+                                                    <option value="Other">Other (describe)</option>
+                                                    </select>
+                                                </div>
+                                                </div>
+                                                <div class="m-form-field -quarter">
+                                                <div class="a-text-field">
+                                                    <label for="update_start_date">From:</label>
+                                                    <input type="date" class="update_start_date" name="start_date" autocomplete="off" />
+                                                </div>
+                                                </div>
+                                                <div class="m-form-field -quarter">
+                                                <div class="a-text-field">
+                                                    <label for="update_end_date">To:</label>
+                                                    <input type="date" class="update_end_date" name="end_date" autocomplete="off" />
+                                                </div>
+                                                </div>
+                                            </div>
+                                            <div class="o-form__row">
+                                                <div class="m-form-field -half">
+                                                <div class="a-text-field">
+                                                    <label for="inactiveReason">Reason for change of Status (explain)*</label>
+                                                    <input type="text" class="inactiveReason"/>
+                                                </div>
+                                                </div>
+                                                <div class="m-form-field -quarter">
+                                                <div class="a-text-field">
+                                                    <button type="submit" class="a-button a-button--primary -without-icon" disabled>
+                                                    <span class="a-button__label">Update Status</span>
+                                                    </button>
+                                                </div>
+                                                </div>
+                                            </div>
+                                            <p class="-size-s">Required fields *</p>
+                                            </form>
+                                        </div>
+                                        <hr>
+                                        `;
+                                    content.innerHTML += updateStatusDiv;
+
+                                    details.appendChild(summary);
+                                    details.appendChild(content);
+                                    fragment.appendChild(details);
+
+                                    // Add event listener for the toggle input
+                                    const updateStatusBtn = content.querySelector('button[type="submit"]'); // Select the button
+                                    const activateUpdateStatus = content.querySelector('.toggle-update'); // Select the toggle
+
+                                    activateUpdateStatus.addEventListener('change', () => {
+                                        if (activateUpdateStatus.checked) {
+                                            updateStatusBtn.removeAttribute('disabled');
+                                        } else {
+                                            updateStatusBtn.setAttribute('disabled', '')
+                                        }
+
+                                    });
+
+                                });
+
+                                detailsGroup.appendChild(fragment);
+
+
+                            }
+
+                            //=============================  END OF HELPER FUNCTIONS==============================================
+
+                            //=============================  CRUD OPERATION TO CHANGE STATUS =====================================
+
+                            /**
+                             *  Handle status update form submission
+                             * 1. triggers CRUD operation for insert
+                             * 2. changes resource status on resource status history
+                             * 3. 
+                             *
+                             * @param {event, resource_id, temporal_status_id, form} input
+                             * @Param{none} Output 
+                             */
+                            async function updateStatus(event, resource_id, temporal_status_id, form) {
+                                event.preventDefault();
+                                const updateReason = form.querySelector('.UpdateReason').value;
+                                const startDate = form.querySelector('.update_start_date').value;
+                                const endDate = form.querySelector('.update_end_date').value;
+                                const inactiveReason = form.querySelector('.inactiveReason').value;
+
+                                const missingFields = [];
+                                if (!updateReason) missingFields.push('Update Reason');
+                                if (!startDate) missingFields.push('Start Date');
+                                if (!endDate) missingFields.push('End Date');
+                                if (!inactiveReason) missingFields.push('Reason for change of Status');
+
+                                if (missingFields.length > 0) {
+                                    showNotification('Please fill in the following required fields: ' + missingFields.join(', '), 'error');
+                                    return;
+                                }
+
+                                const data = {
+                                    resource_id: resource_id,
+                                    temporal_status_id: temporal_status_id,
+                                    updateReason: updateReason,
+                                    startDate: startDate,
+                                    endDate: endDate,
+                                    inactiveReason: inactiveReason.toUpperCase(),
+                                };
+
+                                console.log('Sending data:', data);
+                                try {
+                                    const result = await window.api.updateResource(data);
+                                    if (result.success) {
+                                        showNotification(result.message, 'success');
+                                        // Delay reloading the resources so that the success message remains visible
+                                        setTimeout(() => {
+                                            loadAllResources(currentDate);
+                                        }, 2000);
+                                    } else {
+                                        showNotification(result.message, 'error');
+                                    }
+                                } catch (error) {
+                                    console.error('Error updating resource:', error);
+                                    showNotification('An error occurred while updating the resource. Please try again.', 'error');
+                                }
+                            }
+
+                            //==========================END OF CRUD OPERATION ===================================================
+
+                            //==========================VIEW SETTINGS TO LIST DATA ==============================================
+
+                            /* --- Key renaming and display configuration --- */
+                            const renameMappings = {
+                                rooms: {
+                                    room_name: 'Name',
+                                    status: 'Status',
+                                    historical_status: 'Temporal status',
+                                    start_date: 'Start date',
+                                    end_date: 'End date',
+                                    room_usage: 'Usage',
+                                    room_capacity: 'Capacity',
+                                    room_approval: 'Aproval',
+                                    room_accesibility: 'Accesibility',
+                                    room_safety: 'Safety',
+                                    room_generals: 'Generals',
+                                    room_environment: 'Environment',
+                                    equipment_names: 'Equipments',
+                                },
+                                trainers: {
+                                    trainer_name: 'Name',
+                                    status: 'Status',
+                                    historical_status: 'Temporal status',
+                                    start_date: 'Start date',
+                                    end_date: 'End date',
+                                    topic_1: 'Trainer expertise 1',
+                                    topic_2: 'Trainer expertise 2',
+                                    topic_3: 'Trainer expertise 3',
+                                    topic_4: 'Trainer expertise 4',
+                                    topic_other: 'Other expertise',
+                                    pt: 'Spoken languages (pt)',
+                                    sp: 'Spoken languages (es)',
+                                    en: 'Spoken languages (en)',
+                                    lang_other: 'Spoken languages (other)',
+                                    travel: 'Trainer is listed for travel',
+                                    national: 'Trainer is listed for national travels',
+                                    international: 'Trainer is listed for iternational travels',
+                                },
+                                vehicles: {
+                                    license: 'Licence Plate',
+                                    status: 'Status',
+                                    historical_status: 'Temporal status',
+                                    start_date: 'Start date',
+                                    end_date: 'End date',
+                                    veh_type: 'Vehicle type',
+                                    other_veh_type: 'Other type',
+                                    year: 'Year',
+                                    purchase_year: 'Purchased on',
+                                    brand: 'brand',
+                                    model: 'Model',
+                                    VIN: 'VIN',
+                                    fuel_type: 'Fuel',
+                                    admission_type: 'Admission',
+                                    cylinders: 'Number of cylinders',
+                                    body_type: 'Body type',
+                                    transmission: 'transmission',
+                                    emgine_model: 'Engine model',
+                                    engine_size: 'Engine volume',
+                                    systems: 'Availble systems',
+                                    require_service: 'Require service',
+                                    service_type: 'service_type',
+                                    service_freq: 'Service frequency',
+                                },
+                                equipments: {
+                                    equipment_name: 'Name',
+                                    status: 'Status',
+                                    historical_status: 'Temporal status',
+                                    start_date: 'Start date',
+                                    end_date: 'End date',
+                                    equipment_sn: 'Equipment serial number',
+                                    equipment_use: 'Equipment use',
+                                    equipment_type: 'Equipment type',
+                                    equipment_type_other: 'Other type',
+                                    equipment_mobility: 'equipment mobility',
+                                    location: 'Equipment location',
+                                    equipment_power: 'Supply power',
+                                    require_service: 'Require service',
+                                    service_type: 'service_type',
+                                    service_freq: 'Service frequency',
+                                },
+                                multimedia: {
+                                    multimedia_name: 'Name',
+                                    status: 'Status',
+                                    historical_status: 'Temporal status',
+                                    start_date: 'Start date',
+                                    end_date: 'End date',
+                                    multimedia_sn: 'Multimedia serial number',
+                                    multimedia_type: 'Multimedia type',
+                                    multimedia_type_other: 'Other type',
+                                    multimedia_mobility: 'Multimedia mobility',
+                                    multimedia_power: 'Supply power',
+                                    use_out_cta: 'Availble for external use (out of STC)',
+                                },
+                                workstations: {
+                                    workstation_name: 'Name',
+                                    status: 'Status',
+                                    historical_status: 'Temporal status',
+                                    start_date: 'Start date',
+                                    end_date: 'End date',
+                                    workstation_description: 'Workstation description',
+                                    workstation_qty: 'Workstation total inventory',
+                                    workstation_mobility: 'Workstation availabe for use outside STC',
+                                },
+                                others: {} // For Others tab, no key renaming is applied.
+                            };
+
+                            /**
+                             *  Selection of field title 
+                             * 1. change field title for resource display
+                             * 2. set naming for diff resourcesy
+                             * 3. 
+                             *
+                             * @param {event, resource_id, temporal_status_id, form} input
+                             * @Param{none} Output 
+                             */
+                            function renameKeys(data, resourceType) {
+                                const mapping = renameMappings[resourceType] || {};
+                                if (!Array.isArray(data)) {
+                                    console.error(`renameKeys expected an array for resourceType "${resourceType}", got:`, data);
+                                    return [];
+                                }
+                                return data.map((item) => {
+                                    const renamedItem = {};
+                                    for (const [key, value] of Object.entries(item)) {
+                                        renamedItem[mapping[key] || key] = value;
+                                    }
+                                    return renamedItem;
+                                });
+                            }
+
+                            const displayFields = {
+                                rooms: [
+                                    'Name',
+                                    'Status',
+                                    'Temporal status',
+                                    'Start date',
+                                    'End date',
+                                    'Usage',
+                                    'Capacity',
+                                    'Aproval',
+                                    'Accesibility',
+                                    'Safety',
+                                    'Generals',
+                                    'Environment',
+                                    'Equipments',
+                                ],
+                                trainers: [
+                                    'Name',
+                                    'Status',
+                                    'Temporal status',
+                                    'Start date',
+                                    'End date',
+                                    'Trainer expertise 1',
+                                    'Trainer expertise 2',
+                                    'Trainer expertise 3',
+                                    'Trainer expertise 4',
+                                    'Other expertise',
+                                    'Spoken languages (pt)',
+                                    'Spoken languages (es)',
+                                    'Spoken languages (en)',
+                                    'Spoken languages (other)',
+                                    'Trainer is listed for travel',
+                                    'Trainer is listed for national travels',
+                                    'Trainer is listed for iternational travels',
+                                ],
+                                vehicles: [
+                                    'Name',
+                                    'Status',
+                                    'Temporal status',
+                                    'Start date',
+                                    'End date',
+                                    'Vehicle type',
+                                    'Other type',
+                                    'Year',
+                                    'Purchased on',
+                                    'VIN',
+                                    'Fuel',
+                                    'Admission',
+                                    'Number of cylinders',
+                                    'Body type',
+                                    'transmission',
+                                    'Engine model',
+                                    'Engine volume',
+                                    'Availble systems',
+                                    'Require service',
+                                    'service_type',
+                                    'Service frequency',
+                                ],
+                                equipments: [
+                                    'Name',
+                                    'Status',
+                                    'Temporal status',
+                                    'Start date',
+                                    'End date',
+                                    'Equipment serial number',
+                                    'Equipment use',
+                                    'Equipment type',
+                                    'Other type',
+                                    'equipment mobility',
+                                    'Equipment location',
+                                    'Supply power',
+                                    'Require service',
+                                    'service_type',
+                                    'Service frequency',
+                                ],
+                                multimedia: [
+                                    'Name',
+                                    'Status',
+                                    'Temporal status',
+                                    'Start date',
+                                    'End date',
+                                    'Multimedia serial number',
+                                    'Multimedia type',
+                                    'Other type',
+                                    'Multimedia mobility',
+                                    'Supply power',
+                                    'Availble for external use (out of STC)',
+                                ],
+                                workstations: [
+                                    'Name',
+                                    'Status',
+                                    'Temporal status',
+                                    'Start date',
+                                    'End date',
+                                    'Workstation description',
+                                    'Workstation total inventory',
+                                    'Workstation availabe for use outside STC',
+                                ],
+                                others: []  // No fields defined for Others.
+                            };
+                        </script>
+</body>
+
+</html>
