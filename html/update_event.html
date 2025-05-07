@@ -6,17 +6,10 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     <meta name="description"
         content="Author: Joel Lustgarten, Organization: Technical training center, Area: MA-AA/TSS2-LA, Company: Robert Bosch Ltda., Country: Brazil, Content: Technical training material" />
-    <meta name="google-site-verification" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="robots" content="all" />
-    <meta name="googlebot" content="noarchive" />
-    <meta name="googlebot" content="notranslate" />
-    <meta name="google" content="nopagereadaloud" />
-    <meta http-equiv="imagetoolbar" content="no" />
-    <meta name="rating" content="general" />
     <meta http-equiv="pragma" content="no-cache" />
     <meta name="copyright" content="© Robert Bosch Ltda." />
-    <meta name="keywords" content="Bosch, Technical training, Techical training center, Mechanics" />
+    <meta name="keywords" content="Bosch, Technical training, Technical training center, Mechanics" />
     <link rel="icon" type="image/x-icon" href="../assets/favicons/favicon.ico" />
     <link rel="stylesheet" type="text/css" href="../css/main.css" />
     <title>CTA | Training Planner</title>
@@ -54,9 +47,17 @@
 
     .check_box_container {
         display: grid;
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         gap: 30px;
         align-items: start;
+    }
+
+    .check_box_container.check_box_vehicles, .check_box_container.check_box_multimedia {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .check_box_container.check_box_area {
+        grid-template-columns: repeat(5, 1fr);
     }
 
     .check_box_container .a-checkbox {
@@ -357,7 +358,7 @@
                                                 aria-label="Event search">
                                                 <i class="a-icon ui-ic-search"></i>
                                             </button>
-                                            <button type="button" class="a-search-input__icon-close">
+                                            <button type="button" class="a-search-input__icon-close" title="Close">
                                                 <i class="a-icon ui-ic-close-small"></i>
                                             </button>
                                         </div>
@@ -387,7 +388,7 @@
                                         <div class="m-form-field">
                                             <div class="a-text-field">
                                                 <label for="event_name" data-i18n="ue-search-name"></label>
-                                                <input type="text" id="event_name" readonly="" />
+                                                <input type="text" id="event_name" readonly="" title="Event name"/>
                                             </div>
                                         </div>
                                     </div>
@@ -396,7 +397,7 @@
                                         <div class="m-form-field">
                                             <div class="a-text-field">
                                                 <label for="event_name" data-i18n="ue-event-name"></label>
-                                                <input type="text" id="event_name_2" readonly="" />
+                                                <input type="text" id="event_name_2" readonly="" title="Even name (other)"/>
                                             </div>
                                         </div>
                                     </div>
@@ -422,13 +423,13 @@
                                         <div class="m-form-field -quarter">
                                             <div class="a-text-field">
                                                 <label for="other_event_type" data-i18n="ne-type-other"></label>
-                                                <input type="text" id="other_event_type" disabled="" />
+                                                <input type="text" id="other_event_type" disabled="" title="Other event type"/>
                                             </div>
                                         </div>
                                         <div class="m-form-field -quarter">
                                             <div class="a-date-input">
                                                 <label for="start_date" data-i18n="ne-start-date"></label>
-                                                <input type="date" id="start_date" name="start_date" value="" />
+                                                <input type="date" id="start_date" name="start_date" value="" title="Event start date"/>
                                                 <button type="button" class="a-date-input__button"
                                                     aria-label="open dialog">
                                                     <i class="a-icon boschicon-bosch-ic-calendar-clock"></i>
@@ -438,7 +439,7 @@
                                         <div class="m-form-field -quarter">
                                             <div class="a-date-input">
                                                 <label for="end_date" data-i18n="ne-end-date"></label>
-                                                <input type="date" id="end_date" name="end_date" value="" />
+                                                <input type="date" id="end_date" name="end_date" value="" title="Event end date"/>
                                                 <button type="button" class="a-date-input__button"
                                                     aria-label="open dialog">
                                                     <i class="a-icon boschicon-bosch-ic-calendar-clock"></i>
@@ -519,21 +520,21 @@
                                         <div class="check_resources"
                                             style="display: flex; width: 100%; height: auto; gap:75px; justify-content: center; margin-top: 50px;">
                                             <button type="button" id="submit-confirm-button"
-                                                class="a-button a-button--primary -without-icon" style="width: 150px;">
+                                                class="a-button a-button--primary -without-icon" style="width: 150px;" title="Confirm">
                                                 <span class="a-button__label" style="padding-right: 0.75rem;" data-i18n="ue-confirm-button"></span>
                                             </button>
                                             <button type="submit" id="submit-update-button"
-                                                class="a-button a-button--primary -without-icon" style="width: 150px;">
+                                                class="a-button a-button--primary -without-icon" style="width: 150px;"title="Update">
                                                 <span class="a-button__label" style="padding-right: 0.75rem;" data-i18n="ue-update button"></span>
-                                            </button> <!--changed from submit-event-button review scritt-->
+                                            </button> <!--changed from submit-event-button review script-->
                                             <button type="button" id="submit-participant-button"
-                                                class="a-button a-button--primary -without-icon" style="width: 155px;">
+                                                class="a-button a-button--primary -without-icon" style="width: 155px;" title="Participants">
                                                 <span class=" a-button__label" style="padding-right: 0.75rem;" data-i18n="ue-part-button"></span>
                                             </button>
                                             <button type="button" id="submit-close-button"
-                                                class="a-button a-button--primary -without-icon" style="width: 150px;">
+                                                class="a-button a-button--primary -without-icon" style="width: 150px;" title="Close">
                                                 <span class="a-button__label" style="padding-right: 0.75rem;" data-i18n="ue-search-close"></span>
-                                            </button><!--changed from submit-event-button review scritt-->
+                                            </button><!--changed from submit-event-button review script-->
                                         </div>
                                     </div>
                                 </form>
@@ -645,19 +646,19 @@
         let eventData = [];
         let targetEventId;
         let blockedResources = [];
-        let unavailbleResources = [];
+        let unavailableResources = [];
         let actualResources = [];
         let updateStartDate;
         let updateEndDate;
         let combinedResources = [];
-        let toDeleteResourses = [];
+        let toDeleteResources = [];
         let toIncludeResources = [];
         let targetEventName = '';
 
         //----- HELPER FUNCTIONS ----------
         /**
                 * Format date from ISO standard 
-                * 1. lformat date to standar to exprot to db.js (yyyy-mm-dd).
+                * 1. format date to standard to export to db.js (yyyy-mm-dd).
                 * 2. 
                 *
                 * @param {DATE (ISO)} Date
@@ -732,9 +733,9 @@
         }
 
         /**
-        * Initialize data load on seach sugestion
+        * Initialize data load on search suggestion
         * 1. Trigger populate search box on 3 digit input
-        * 2. if imput is not ok, trigger select all
+        * 2. if input is not ok, trigger select all
         * 3. 
         *
         * @param {none}
@@ -754,11 +755,11 @@
                     targetEventId = null;
                     blockedResources = [];
                     actualResources = [];
-                    unavailbleResources = [];
+                    unavailableResources = [];
                     updateStartDate = null;
                     updateEndDate = null;
                     combinedResources = [];
-                    toDeleteResourses = [];
+                    toDeleteResources = [];
                     toIncludeResources = [];
                     targetEventName = '';
                     resetResourceStyles();
@@ -853,8 +854,8 @@
 
         /**
         * Highlight 3 digit input on event name
-        * 1. take initial imput digits.
-        * 2. ohighlight input on displayed options
+        * 1. take initial input digits.
+        * 2. highlight input on displayed options
         * 3. 
         *
         * @param {name} input event name
@@ -933,7 +934,7 @@
        * 3. 
        *
        * @param {none} input 
-       * @Param {rtrainerdata} Output
+       * @Param {trainer data} Output
        */
         async function loadTrainersData() {
             const trainersData = await window.api.getEventTrainerData();
@@ -969,7 +970,7 @@
        * 3. 
        *
        * @param {none} input 
-       * @Param {equipmentdata} Output
+       * @Param {equipment data} Output
        */
         async function loadEquipmentData() {
             const equipmentData = await window.api.getEventEquipmentData();
@@ -1084,7 +1085,7 @@
         /**
        *  Update  registered participants action
        *  1. Update db participants
-       *  2. include participant numbersy
+       *  2. include participant numbers
        *  
        * 
        * @Param {eventId, event resources} input
@@ -1114,8 +1115,8 @@
         /**
        *  Close event action
        *  1. Update db events
-       *  2. iset event to closed 
-       *  3. update the final numer of participants
+       *  2. Set event to closed 
+       *  3. update the final number of participants
        *  
        * 
        * @Param {eventId, event resources} input
@@ -1158,7 +1159,7 @@
 
 
         /**
-         * Get selected checboxes
+         * Get selected checkboxes
          * 1. create an array with selected checkboxes.
          * 2. Populate search suggestion for event data.
          * 3. ".
@@ -1202,14 +1203,14 @@
                 selectedWorkstations,
             );
 
-            toDeleteResourses = actualResources.filter(item => !combinedResources.includes(item));
+            toDeleteResources = actualResources.filter(item => !combinedResources.includes(item));
             toIncludeResources = combinedResources.filter(item => !actualResources.includes(item));
 
             console.log('actual res: ', actualResources);
             console.log('blocked res: ', blockedResources);
-            console.log('Unavailable res: ', unavailbleResources);
+            console.log('Unavailable res: ', unavailableResources);
             console.log('Submitting event:', combinedResources);
-            console.log('resources to delete: ', toDeleteResourses);
+            console.log('resources to delete: ', toDeleteResources);
             console.log('to include resources: ', toIncludeResources);
             console.log('event star date: ', updateStartDate);
             console.log('event end date: ', updateEndDate);
@@ -1220,18 +1221,18 @@
 
 
             try {
-                const result = await window.api.replaceEventResources(targetEventId, targetEventName, updateStartDate, updateEndDate, toDeleteResourses, toIncludeResources);
+                const result = await window.api.replaceEventResources(targetEventId, targetEventName, updateStartDate, updateEndDate, toDeleteResources, toIncludeResources);
                 hidePersistentNotification();
                 if (result.success) {
                     showNotification(`Event updated successfully! ID: ${result.targetEventId}`);
                     targetEventId = null;
                     blockedResources = [];
                     actualResources = [];
-                    unavailbleResources = [];
+                    unavailableResources = [];
                     updateStartDate = null;
                     updateEndDate = null;
                     combinedResources = [];
-                    toDeleteResourses = [];
+                    toDeleteResources = [];
                     toIncludeResources = [];
                     resetResourceStyles();
                     setTimeout(() => {
@@ -1251,11 +1252,11 @@
 
         /**
          * Function to call event resources
-         * 1. Fetch event respources from db.
+         * 1. Fetch event resources from db.
          * 2. call to populate checkboxes.
          * 3. 
          *
-         * @param {evntId} input
+         * @param {eventId} input
          * @Param{none} Output type:
          */
         async function getEventResourceData(eventId, startDate, endDate) {
@@ -1268,7 +1269,7 @@
                 const mapedEventResources = blockedEventResources.map(resource => resource.resource_id);
                 blockedResources = mapedEventResources;
 
-                unavailbleResources = blockedResources.filter(item => !actualResources.includes(item));
+                unavailableResources = blockedResources.filter(item => !actualResources.includes(item));
 
                 updateStartDate = formatDate(startDate);
                 updateEndDate = formatDate(endDate);
@@ -1284,13 +1285,13 @@
                     console.log('Unable to retrieve event resources information');
                 }
 
-                if (unavailbleResources) {
-                    selectCheckboxesByUnavailableResourceIds('checkbox_container_areas', 'area', unavailbleResources);
-                    selectCheckboxesByUnavailableResourceIds('checkbox_container_trainers', 'trainers', unavailbleResources);
-                    selectCheckboxesByUnavailableResourceIds('checkbox_container_vehicles', 'vehicles', unavailbleResources);
-                    selectCheckboxesByUnavailableResourceIds('checkbox_container_equipment', 'equipment', unavailbleResources);
-                    selectCheckboxesByUnavailableResourceIds('checkbox_container_multimedia', 'multimedia', unavailbleResources);
-                    selectCheckboxesByUnavailableResourceIds('checkbox_container_workstations', 'workstations', unavailbleResources);
+                if (unavailableResources) {
+                    selectCheckboxesByUnavailableResourceIds('checkbox_container_areas', 'area', unavailableResources);
+                    selectCheckboxesByUnavailableResourceIds('checkbox_container_trainers', 'trainers', unavailableResources);
+                    selectCheckboxesByUnavailableResourceIds('checkbox_container_vehicles', 'vehicles', unavailableResources);
+                    selectCheckboxesByUnavailableResourceIds('checkbox_container_equipment', 'equipment', unavailableResources);
+                    selectCheckboxesByUnavailableResourceIds('checkbox_container_multimedia', 'multimedia', unavailableResources);
+                    selectCheckboxesByUnavailableResourceIds('checkbox_container_workstations', 'workstations', unavailableResources);
                 } else {
                     console.log('Unable to retrieve blocked event resources information')
                 }
@@ -1338,14 +1339,14 @@
 
         /**
          * Function to check checkboxes
-         * 1. change checkbox style for unavailble resources
+         * 1. change checkbox style for unavailable resources
          * 2. Change checkbox style.
          * 3. Based on general reserved resource (resource_id)
          *
          * @param {containerId, checkboxGroupName, resourceIds} input
          * @Param{checked checkbox} Output type:CSS style
          */
-        //Function to disable checkboxes and change style for unabailble resources
+        //Function to disable checkboxes and change style for unabailable resources
         function selectCheckboxesByUnavailableResourceIds(containerId, checkboxGroupName, resourceIds) {
             // Get all checkboxes in the specified container
             const checkboxes = document.querySelectorAll(`#${containerId} input[name="${checkboxGroupName}[]"]`);

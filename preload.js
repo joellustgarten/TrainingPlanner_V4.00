@@ -12,7 +12,7 @@ contextBridge.exposeInMainWorld('api', {
 
 
   /**
-  * Expose tuser data:
+  * Expose user data:
   * 1. return user data to index.html.
   * 2. provide user profile to enable nav menu.
   * 3. provide user name to populate header".
@@ -49,7 +49,7 @@ contextBridge.exposeInMainWorld('api', {
   * expose room data:
   * 1. return room data to new_event.html.
   * 2. transfer information to loadRoomData.
-  * 3. room data is used to fill selection checkboxese".
+  * 3. room data is used to fill selection checkboxes".
   *
   * @param {none}
   */
@@ -66,7 +66,7 @@ contextBridge.exposeInMainWorld('api', {
  * expose trainer data:
  * 1. return trainer data to new_event.html.
  * 2. transfer information to loadTrainerData.
- * 3. Trainer data is used to fill selection checkboxese".
+ * 3. Trainer data is used to fill selection checkboxes".
  *
  * @param {none}
  */
@@ -83,7 +83,7 @@ contextBridge.exposeInMainWorld('api', {
  * expose vehicle data:
  * 1. return vehicle data to new_event.html.
  * 2. transfer information to loadVehicleData.
- * 3. vehicle data is used to fill selection checkboxese".
+ * 3. vehicle data is used to fill selection checkboxes".
  *
  * @param {none}
  */
@@ -100,7 +100,7 @@ contextBridge.exposeInMainWorld('api', {
  * expose equipment data:
  * 1. return equipment data to new_event.html.
  * 2. transfer information to loadEquipmentData.
- * 3. equipment data is used to fill selection checkboxese".
+ * 3. equipment data is used to fill selection checkboxes".
  *
  * @param {none}
  */
@@ -117,7 +117,7 @@ contextBridge.exposeInMainWorld('api', {
  * expose multimedia data:
  * 1. return multimedia data to new_event.html.
  * 2. transfer information to loadMultimediaData.
- * 3. Multimedia data is used to fill selection checkboxese".
+ * 3. Multimedia data is used to fill selection checkboxes".
  *
  * @param {none}
  */
@@ -134,7 +134,7 @@ contextBridge.exposeInMainWorld('api', {
  * expose workstation data:
  * 1. return workstation data to new_event.html.
  * 2. transfer information to loadWorkstationData.
- * 3. workstation data is used to fill selection checkboxese".
+ * 3. workstation data is used to fill selection checkboxes".
  *
  * @param {none}
  */
@@ -151,7 +151,7 @@ contextBridge.exposeInMainWorld('api', {
    * expose reserved resource data:
    * 1. return resource status data to new_event.html.
    * 2. transfer information to getReservedResourceData.
-   * 3. resource data is used to disable selection checkboxese".
+   * 3. resource data is used to disable selection checkboxes".
    *
    * @param {start_date, end-date}
    */
@@ -161,7 +161,7 @@ contextBridge.exposeInMainWorld('api', {
       return await ipcRenderer.invoke('db-getReservedResources', start_date, end_date);
     } catch (error) {
       console.log('preload.js error in db-getReservedResources:', error);
-      return { succes: false, message: 'unexpected error in getting event resource data, Please contact support.' };
+      return { success: false, message: 'unexpected error in getting event resource data, Please contact support.' };
     }
   },
 
@@ -305,11 +305,11 @@ contextBridge.exposeInMainWorld('api', {
   * 1. Change event resources
   * 2. add o delete event resources as required
   *
-  * @param {targetEventId, updateStartDate, updateEndDate, toDeleteResourses, toIncludeResources} input
+  * @param {targetEventId, updateStartDate, updateEndDate, toDeleteResources, toIncludeResources} input
   */
-  replaceEventResources: async (targetEventId, targetEventName, updateStartDate, updateEndDate, toDeleteResourses, toIncludeResources) => {
+  replaceEventResources: async (targetEventId, targetEventName, updateStartDate, updateEndDate, toDeleteResources, toIncludeResources) => {
     try {
-      return await ipcRenderer.invoke('db-replaceEventResources', targetEventId, targetEventName, updateStartDate, updateEndDate, toDeleteResourses, toIncludeResources);
+      return await ipcRenderer.invoke('db-replaceEventResources', targetEventId, targetEventName, updateStartDate, updateEndDate, toDeleteResources, toIncludeResources);
     } catch (error) {
       console.error('preload.js error in db-replaceEventResources:', error);
       throw error;
@@ -318,7 +318,7 @@ contextBridge.exposeInMainWorld('api', {
 
   /**
   * expose get resources :
-  * 1. retirves room data
+  * 1. retrieves room data
   * 2. feed data to fill tab on view_resources.html
   *
   * @param {date} input
@@ -334,7 +334,7 @@ contextBridge.exposeInMainWorld('api', {
 
   /** 
   * expose get resources :
-  * 1. retirves trainer data
+  * 1. retrieves trainer data
   * 2. feed data to fill tab on view_resources.html
   *
   * @param {date} input
@@ -350,7 +350,7 @@ contextBridge.exposeInMainWorld('api', {
 
   /** 
   * expose get resources :
-  * 1. retirves vehicles data
+  * 1. retrieves vehicles data
   * 2. feed data to fill tab on view_resources.html
   *
   * @param {date} input
@@ -366,7 +366,7 @@ contextBridge.exposeInMainWorld('api', {
 
   /** 
   * expose get resources :
-  * 1. retirves equipment data
+  * 1. retrieves equipment data
   * 2. feed data to fill tab on view_resources.html
   *
   * @param {date} input
@@ -382,7 +382,7 @@ contextBridge.exposeInMainWorld('api', {
 
   /** 
   * expose get resources :
-  * 1. retirves multimedia data
+  * 1. retrieves multimedia data
   * 2. feed data to fill tab on view_resources.html
   *
   * @param {date} input
@@ -398,7 +398,7 @@ contextBridge.exposeInMainWorld('api', {
 
   /** 
   * expose get resources :
-  * 1. retirves workstation data
+  * 1. retrieves workstation data
   * 2. feed data to fill tab on view_resources.html
   *
   * @param {date} input
@@ -415,7 +415,7 @@ contextBridge.exposeInMainWorld('api', {
   /** 
   * expose update resources :
   * 1. Call for CRUD operation 
-  * 2. Tranfer resource update data from view_resources.html
+  * 2. Transfer resource update data from view_resources.html
   * 3. Update resource status on rsh table (db)
   *
   * @param {date} input
@@ -448,7 +448,7 @@ contextBridge.exposeInMainWorld('api', {
   /** 
   * expose disable resources :
   * 1. Call for CRUD operation 
-  * 2. Tranfer resource update call from update_resources.html
+  * 2. Transfer resource update call from update_resources.html
   * 3. Update resource status on resource table (db)
   *
   * @param {date} input
@@ -465,7 +465,7 @@ contextBridge.exposeInMainWorld('api', {
   /** 
   * expose create resources :
   * 1. Call for CRUD operation 
-  * 2. Tranfer resource create call from new_resources.html
+  * 2. Transfer resource create call from new_resources.html
   * 3. Create resource on specific resource table (db)
   *
   * @param {date} input
@@ -482,7 +482,7 @@ contextBridge.exposeInMainWorld('api', {
   /** 
    * Fetch stored messages :
    * 1. Call for CRUD operation 
-   * 2. Tranfer messages to view_messages.html
+   * 2. Transfer messages to view_messages.html
    * 3. provide message count by type
    * 4. provide message status
    * 
@@ -641,19 +641,19 @@ contextBridge.exposeInMainWorld('api', {
   },
 
   /** 
-    * Call to get schedulle weekly data:
+    * Call to get schedule weekly data:
     * 1. Call for CRUD operation 
     * 2. Get event & resources for month
     * 3. 
     * 
     * @param {startDate, endDate} input
     */
-  getMonthlySchedulle: async (startDate, endDate) => {
+  getMonthlySchedule: async (startDate, endDate) => {
     try {
-      const result = await ipcRenderer.invoke('db-getMonthlySchedulle', startDate, endDate);
+      const result = await ipcRenderer.invoke('db-getMonthlySchedule', startDate, endDate);
       return result;
     } catch (error) {
-      console.error('preload.js error in db-getMonthlySchedulle:', error);
+      console.error('preload.js error in db-getMonthlySchedule:', error);
       throw error;
     }
   },
@@ -661,7 +661,7 @@ contextBridge.exposeInMainWorld('api', {
   /** 
     * Call to add holiday data:
     * 1. Call for CRUD operation 
-    * 2. add holidays informations
+    * 2. add holidays information
     * 3. 
     * 
     * @param {data} input
@@ -677,7 +677,7 @@ contextBridge.exposeInMainWorld('api', {
   },
 
   /** 
-    * Call to get schedulle weekly data:
+    * Call to get schedule weekly data:
     * 1. Call for CRUD operation 
     * 2. Get event & resources for month
     * 3. 
@@ -695,7 +695,7 @@ contextBridge.exposeInMainWorld('api', {
   },
 
   /** 
-    * Call to get sstatus table data:
+    * Call to get status table data:
     * 1. Call for CRUD operation 
     * 2. Get confirmation & participants for month
     * 3. 

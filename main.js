@@ -66,7 +66,7 @@ ipcMain.on('open-popup', () => {
   });
 
 
-  popup.loadFile(path.join(__dirname, 'html/schedulle.html'));
+  popup.loadFile(path.join(__dirname, 'html/schedule.html'));
 
   popup.on('closed', () => {
     console.log('Popup window closed');
@@ -75,7 +75,7 @@ ipcMain.on('open-popup', () => {
 
 
 
-// ===== INDEX.HTML: CALLS TO DB FOR DATA RETRIEVAL AND CRUD OPPERATIONS =====
+// ===== INDEX.HTML: CALLS TO DB FOR DATA RETRIEVAL AND CRUD OPERATIONS =====
 
 /**
  * Main handler for user data:
@@ -94,7 +94,7 @@ ipcMain.handle('db-getUserData', async (event, userCode) => {
   }
 });
 
-// ===== NEW_EVENT.HTML: CALLS TO DB FOR DATA RETRIEVAL AND CRUD OPPERATIONS =====
+// ===== NEW_EVENT.HTML: CALLS TO DB FOR DATA RETRIEVAL AND CRUD OPERATIONS =====
 
 /**
  * Main handler for training data:
@@ -117,7 +117,7 @@ ipcMain.handle('db-getTrainingData', async (event) => {
 
 /* Main handler for reserved resources data:
 * 1. return resource status to new_event.html.
-* 2. Used to disable resources checboxes for event data.
+* 2. Used to disable resources checkboxes for event data.
 * 3. 
 *
 * @param {start_date. end_date}
@@ -151,7 +151,7 @@ ipcMain.handle('db-createEvent', async (event, eventData, user) => {
 });
 
 /* Main handler for view event:
-* 1. Fetch event data to cview on view_event.html.
+* 1. Fetch event data to view on view_event.html.
 * 2. provides data to display event info.
 * 3. 
 *
@@ -281,7 +281,7 @@ ipcMain.handle('db-getEventMultimediaData', async (event) => {
 });
 
 /* Main handler for get update event resources:
-* 1. Fetch workstationdata data to view on update_event.html.
+* 1. Fetch workstation data data to view on update_event.html.
 * 2. provides data to create checkboxes with event resources info.
 * 3. 
 *
@@ -301,7 +301,7 @@ ipcMain.handle('db-getEventWorkstationData', async (event) => {
 
 /* Main handler for update event status:
 * 1. send event data to  update event on db.
-* 2. trigers event resource status update.
+* 2. triggers event resource status update.
 * 3. 
 *
 * @param {}
@@ -320,7 +320,7 @@ ipcMain.handle('db-confirmEvent', async (event, eventId) => {
 
 /* Main handler for cancel event status:
 * 1. send event data to cancel event on db.
-* 2. trigers event resource status delete.
+* 2. triggers event resource status delete.
 * 3. 
 *
 * @param {eventId} input
@@ -337,7 +337,7 @@ ipcMain.handle('db-cancelEvent', async (event, eventId) => {
 });
 
 /* Main handler for update participant registration:
-* 1. Send participant number to Partcipant table on db.
+* 1. Send participant number to Participant table on db.
 *
 * @param {participants, eventId} input
 */
@@ -354,8 +354,8 @@ ipcMain.handle('db-updateParticipants', async (event, participants, eventId) => 
 
 
 /* Main handler for close event:
-* 1. Send total participant number to Partcipant table on db.
-* 2. Set event staus to executed 
+* 1. Send total participant number to Participant table on db.
+* 2. Set event status to executed 
 *
 * @param {participants, eventId} input
 */
@@ -376,13 +376,13 @@ ipcMain.handle('db-endEvent', async (event, participants, eventId) => {
 * 3. Send resources to include on event resources table on db
 * 4. Send resources to include on resource status history table on db
 *
-* @param {targetEventId, updateStartDate, updateEndDate, toDeleteResourses, toIncludeResources} input
+* @param {targetEventId, updateStartDate, updateEndDate, toDeleteResources, toIncludeResources} input
 */
-ipcMain.handle('db-replaceEventResources', async (event, targetEventId, targetEventName, updateStartDate, updateEndDate, toDeleteResourses, toIncludeResources) => {
+ipcMain.handle('db-replaceEventResources', async (event, targetEventId, targetEventName, updateStartDate, updateEndDate, toDeleteResources, toIncludeResources) => {
 
   try {
 
-    const replaceEvent = await db.replaceEventResources(targetEventId, targetEventName, updateStartDate, updateEndDate, toDeleteResourses, toIncludeResources);
+    const replaceEvent = await db.replaceEventResources(targetEventId, targetEventName, updateStartDate, updateEndDate, toDeleteResources, toIncludeResources);
     return { success: true, message: 'Event resources update successful', data: replaceEvent };
   } catch (error) {
     return { success: false, message: error.message };
@@ -390,11 +390,11 @@ ipcMain.handle('db-replaceEventResources', async (event, targetEventId, targetEv
 });
 
 
-//======= VIEW_RESOURCES.HTML / CRUD OPERATIONS TO VIEN AND UPDATE RESOURCE STATUS================
+//======= VIEW_RESOURCES.HTML / CRUD OPERATIONS TO VIE AND UPDATE RESOURCE STATUS================
 
 /* Main handler for room data:
 * 1. return room data to new_event.html.
-* 2. Populate checboxes for event data.
+* 2. Populate checkboxes for event data.
 * 3. 
 *
 * @param {none}
@@ -413,7 +413,7 @@ ipcMain.handle('db-getRoomsData', async (event, date) => {
 
 /* Main handler for trainer data:
 * 1. return trainer data to new_event.html.
-* 2. Populate checboxes for event data.
+* 2. Populate checkboxes for event data.
 * 3. 
 *
 * @param {none}
@@ -432,7 +432,7 @@ ipcMain.handle('db-getTrainersData', async (event, date) => {
 
 /* Main handler for vehicles data:
 * 1. return vehicles data to new_event.html.
-* 2. Populate checboxes for event data.
+* 2. Populate checkboxes for event data.
 * 3. 
 *
 * @param {none}
@@ -451,7 +451,7 @@ ipcMain.handle('db-getVehicleData', async (event, date) => {
 
 /* Main handler for equipment data:
 * 1. return equipment data to new_event.html.
-* 2. Populate checboxes for event data.
+* 2. Populate checkboxes for event data.
 * 3. 
 *
 * @param {none}
@@ -470,7 +470,7 @@ ipcMain.handle('db-getEquipmentData', async (event, date) => {
 
 /* Main handler for Multimedia data:
 * 1. return Multimedia data to new_event.html.
-* 2. Populate checboxes for event data.
+* 2. Populate checkboxes for event data.
 * 3. 
 *
 * @param {none}
@@ -489,7 +489,7 @@ ipcMain.handle('db-getMultimediaData', async (event, date) => {
 
 /* Main handler for workstation data:
 * 1. return workstation data to new_event.html.
-* 2. Populate checboxes for event data.
+* 2. Populate checkboxes for event data.
 * 3. 
 *
 * @param {date}
@@ -544,7 +544,7 @@ ipcMain.handle('db-getResourceDataByCategory', async (event, cat) => {
 * 2. Update resource status on resources table db.
 *
 *
-* @param {cresource id} input
+* @param {resource id} input
 */
 ipcMain.handle('db-disableResource', async (event, resourceId) => {
   try {
@@ -573,9 +573,9 @@ ipcMain.handle('db-createResourceUnified', async (event, resourceType, data) => 
   }
 });
 
-/* Main handler tofetch mesages:
+/* Main handler to fetch messages:
 * 1. Get messages from message table on db.
-* 2. serve messages to view_mesages.html.
+* 2. serve messages to view_messages.html.
 *
 *
 * @param {resource type, data} input
@@ -604,7 +604,7 @@ ipcMain.handle('db-markAsRead', async (event, id) => {
   }
 });
 
-/* Main handler to get palnned event count:
+/* Main handler to get planned event count:
 * 1. Query db to get participant count on db.
 *
 * @param {resource type, data} input
@@ -618,7 +618,7 @@ ipcMain.handle('db-getPlCardCount', async (event) => {
   }
 });
 
-/* Main handler to get palnned event count:
+/* Main handler to get planned event count:
 * 1. Query db to get participant count on db.
 *
 * @param {none} input
@@ -703,14 +703,14 @@ ipcMain.handle('db-getMessageStatus', async (event) => {
   }
 });
 
-/* Main handler to get weekly scheddulle:
+/* Main handler to get weekly schedule:
 * 1. Query db to get event and event resources.
 *
 * @param {start date, end date} input
 */
-ipcMain.handle('db-getMonthlySchedulle', async (event, startDate, endDate) => {
+ipcMain.handle('db-getMonthlySchedule', async (event, startDate, endDate) => {
   try {
-    const result = await db.getMonthlySchedulle(startDate, endDate);
+    const result = await db.getMonthlySchedule(startDate, endDate);
     return result;
   } catch (error) {
     return { success: false, message: error.message };
@@ -747,7 +747,7 @@ ipcMain.handle('db-getHoliday', async (event, start, end) => {
 
 
 /* Main handler to get status table data:
-* 1. Query db to get monthly statuss.
+* 1. Query db to get monthly status.
 *
 * @param {month} input
 */

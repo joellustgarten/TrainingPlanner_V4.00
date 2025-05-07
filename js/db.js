@@ -194,7 +194,7 @@ async function getRoomsData(date) {
 }
 
 /**
- * Retrieve rtrainer data for view_resources.html"
+ * Retrieve trainer data for view_resources.html"
  * for resource update.
  *
  * @param {string} inputDate - The date string in "yyyy-mm-dd" format.
@@ -429,7 +429,7 @@ async function getWorkstationData(date) {
 
 //--------------  END VIEW_RESOURCES.HTML || HELPER FUNCTIONS--------------------
 
-// ===== NEW_EVENT.HTML: CALLS TO DB FOR DATA RETRIEVAL AND CRUD OPPERATIONS =====
+// ===== NEW_EVENT.HTML: CALLS TO DB FOR DATA RETRIEVAL AND CRUD OPERATIONS =====
 
 /**
  * Query db to retrieve training data:
@@ -458,7 +458,7 @@ async function getTrainingData() {
  * Query db to retrieve room data:
  * 1. return room data to new_event.html.
  * 2. transfer information to loadRoomData.
- * 3. room data is used to fill selection checkboxese".
+ * 3. room data is used to fill selection checkboxes".
  *
  * @param {none}
  */
@@ -484,7 +484,7 @@ async function getEventRoomData() {
  * Query db to retrieve trainer data:
  * 1. return trainer data to new_event.html.
  * 2. transfer information to loadTrainerData.
- * 3. Trainer data is used to fill selection checkboxese".
+ * 3. Trainer data is used to fill selection checkboxes".
  *
  * @param {none}
  */
@@ -510,7 +510,7 @@ async function getEventTrainerData() {
  * Query db to retrieve vehicle data:
  * 1. return vehicle data to new_event.html.
  * 2. transfer information to loadVehicleData.
- * 3. vehicle data is used to fill selection checkboxese".
+ * 3. vehicle data is used to fill selection checkboxes".
  *
  * @param {none}
  */
@@ -538,7 +538,7 @@ async function getEventVehicleData() {
  * Query db to retrieve equipment data:
  * 1. return equipment data to new_event.html.
  * 2. transfer information to loadEquipmentData.
- * 3. equipment data is used to fill selection checkboxese".
+ * 3. equipment data is used to fill selection checkboxes".
  *
  * @param {none}
  */
@@ -564,7 +564,7 @@ async function getEventEquipmentData() {
  * Query db to retrieve multimedia data:
  * 1. return multimedia data to new_event.html.
  * 2. transfer information to loadMultimediaData.
- * 3. Multimedia data is used to fill selection checkboxese".
+ * 3. Multimedia data is used to fill selection checkboxes".
  *
  * @param {none}
  */
@@ -590,7 +590,7 @@ async function getEventMultimediaData() {
  * Query db to retrieve workstation data:
  * 1. return workstation data to new_event.html.
  * 2. transfer information to loadWorkstationData.
- * 3. workstation data is used to fill selection checkboxese".
+ * 3. workstation data is used to fill selection checkboxes".
  *
  * @param {none}
  */
@@ -615,8 +615,8 @@ async function getEventWorkstationData() {
 /**
  * Query db to retrieve unavailable resource status data:
  * 1. return resource status to new_event.html.
- * 2. retrieve info from resourceSatusHistory.
- * 3. resource status will enable / disable  selection checkboxese".
+ * 2. retrieve info from resourceStatusHistory.
+ * 3. resource status will enable / disable  selection checkboxes".
  *
  * @param {start_date, end_date}
  */
@@ -628,14 +628,14 @@ async function getReservedResources(start_date, end_date) {
     }
 
     // Format dates for MS Access
-    const formatedStartDate = formatDateForAccess(start_date);
-    const formatedEndDate = formatDateForAccess(end_date);
+    const formattedStartDate = formatDateForAccess(start_date);
+    const formattedEndDate = formatDateForAccess(end_date);
 
     const query = `
     SELECT resource_id
     FROM ResourceStatusHistory
-    WHERE start_date <= #${formatedEndDate}#
-    AND (end_date >= #${formatedStartDate}# OR end_date IS NULL)`;
+    WHERE start_date <= #${formattedEndDate}#
+    AND (end_date >= #${formattedStartDate}# OR end_date IS NULL)`;
     const reservedIds = await connection.query(query);
     return reservedIds;
   } catch (error) {
@@ -645,7 +645,7 @@ async function getReservedResources(start_date, end_date) {
 
 /**
  * create event into db:
- * 1. trigger checkResourcesRecursively to validate reource status.
+ * 1. trigger checkResourcesRecursively to validate resource status.
  * 2. if status is free, triggers insert event .
  * 3. if event is created insert participant requirement.
  * 4. if event is created updates resource history
@@ -844,7 +844,7 @@ async function createEventResources(eventData, eventId, selectedResources, appUs
 }
 
 //  HELPER FUNCTION
-// Add requiren number of participants and stores actual registrations for each event
+// Add required number of participants and stores actual registrations for each event
 async function insertParticipants(eventId, min_part) {
   try {
     const query = `INSERT INTO Participants (event_id, required_participants, inscribed_participants) VALUES (${eventId}, ${min_part}, 0)`;
@@ -941,13 +941,13 @@ async function rollbackDeleteResourceStatusHistory(selectedResources, eventStart
 
 // --- END OF HELPER FUNCTIONS TO CREATE EVENT -------
 
-// ===== VIEW_EVENT.HTML: CALLS TO DB FOR DATA RETRIEVAL AND CRUD OPPERATIONS =====
+// ===== VIEW_EVENT.HTML: CALLS TO DB FOR DATA RETRIEVAL AND CRUD OPERATIONS =====
 
 /**
  * Query db to retrieve events data:
  * 1. return events data to view_event.html.
  * 2. Populate grid and details for  event data.
- * 3. event data is used for visual aid on area ocupation.
+ * 3. event data is used for visual aid on area occupation.
  *
  * @param {none}
  */
@@ -1030,7 +1030,7 @@ ORDER BY
 
 // --- END OF HELPER FUNCTIONS TO VIEW EVENT -------
 
-// ===== UPDATE_EVENT.HTML: CALLS TO DB FOR DATA RETRIEVAL AND CRUD OPPERATIONS =====
+// ===== UPDATE_EVENT.HTML: CALLS TO DB FOR DATA RETRIEVAL AND CRUD OPERATIONS =====
 
 /**
  * Query db to retrieve events data:
@@ -1222,7 +1222,7 @@ async function deleteEventRecord(eventId) {
 
 /**
  * Delete event resource record from  db:
- * 1. Uodate event resource status from reserved to confirmed.
+ * 1. Update event resource status from reserved to confirmed.
  * 2. .
  * 4. 
  *
@@ -1266,7 +1266,7 @@ async function deleteResourceStatusHistory(eventId) {
 }
 
 /**
-* Update partcipant on db:
+* Update participant on db:
 * 1. Update participants.
 * 2. 
 *
@@ -1292,7 +1292,7 @@ async function updateParticipants(participants, eventId) {
 }
 
 /**
- * Update partcipant registry on db:
+ * Update participant registry on db:
  * 1. Update participants table.
  * 2. 
  *
@@ -1361,7 +1361,7 @@ async function eventExecuted(eventId) {
 }
 
 /**
- * Update total partcipant registry on db:
+ * Update total participant registry on db:
  * 1. Update participants table.
  * 2. 
  * @param {number, number} eventId participants
@@ -1386,17 +1386,17 @@ async function finalPartTableUpdate(participants, eventId) {
  * @param {number, date, date, array, array} eventId, start date, end date, to delete, to include
  * @param {Promise<object>} 
  */
-async function replaceEventResources(targetEventId, targetEventName, updateStartDate, updateEndDate, toDeleteResourses, toIncludeResources) {
+async function replaceEventResources(targetEventId, targetEventName, updateStartDate, updateEndDate, toDeleteResources, toIncludeResources) {
 
   const replaceStartDate = formatDateForAccess(updateStartDate);
   const replaceEndDate = formatDateForAccess(updateEndDate);
 
   try {
-    // Delete resource from resourcestatus history
-    await removeFromResourceStatusHistory(targetEventId, replaceStartDate, replaceEndDate, toDeleteResourses);
+    // Delete resource from resource status history
+    await removeFromResourceStatusHistory(targetEventId, replaceStartDate, replaceEndDate, toDeleteResources);
 
     // Delete resource from event resources
-    await removeFromEventResources(targetEventId, toDeleteResourses);
+    await removeFromEventResources(targetEventId, toDeleteResources);
 
     //include resource on resource status history
     await includeOnResourceStatusHistory(targetEventId, replaceStartDate, replaceEndDate, targetEventName, toIncludeResources);
@@ -1692,7 +1692,7 @@ const resourceConfigurations = {
  * @param {data} resource data
  * @param {Promise<object>} 
  */
-// function to create resurces  into new_resources : confirmed
+// function to create resources  into new_resources : confirmed
 async function createResourceUnified(resourceType, data) {
   const config = resourceConfigurations[resourceType];
   if (!config) {
@@ -1826,7 +1826,7 @@ async function createResourceUnified(resourceType, data) {
 // ===== VIEW_RESOURCES.HTML: CRUD OPERATION TO UPDATE DB ====================
 
 /**
- * CRUD  to uodate resorce status:
+ * CRUD  to update resource status:
  * 1. Change resource status on resource status history.
  * 2. Check if rsh is other that reserved or programed.
  * 3. Validate if status change is viable.
@@ -2054,7 +2054,7 @@ async function checkEventResourceRegistration(resourceId) {
 
 //===============END OF UPDATE_RESOURCES.HTML FUNCTIONS=================================================
 
-// ===== VIEW_MESSAGES.HTML: CALLS TO DB FOR MESSAGE CREATION AND RETRIEVAL + CRUD OPPERATIONS =====
+// ===== VIEW_MESSAGES.HTML: CALLS TO DB FOR MESSAGE CREATION AND RETRIEVAL + CRUD OPERATIONS =====
 
 /**
  * Query db to retrieve messages:
@@ -2117,7 +2117,7 @@ async function markAsRead(id) {
 //===========INDEX.HTML ||  HELPER FUNCTIONS TO RETRIEVE KPI´S====================
 
 /**
- * Query db to retrieve crad data:
+ * Query db to retrieve crud data:
  * 1. Count to update planned card
  * 
  *
@@ -2140,7 +2140,7 @@ async function getPlCardCount() {
 
 /**
  * Query db to retrieve card data:
- * 1. Count to update pexecuted card
+ * 1. Count to update executed card
  * 
  *
  * @param {none} input
@@ -2281,7 +2281,7 @@ async function getMessageStatus() {
   }
 }
 
-//  SCHEDULLE.HTML POPUP FUNCTIONS TRIGGERED FROM INDEX.HTML
+//  SCHEDULE.HTML POPUP FUNCTIONS TRIGGERED FROM INDEX.HTML
 /**
  * Query db to retrieve message count data:
  * 1. Query to update message warning
@@ -2290,7 +2290,7 @@ async function getMessageStatus() {
  * @param {start_date, end_date} input
  * @param {Array} output
  */
-async function getMonthlySchedulle(startDate, endDate) {
+async function getMonthlySchedule(startDate, endDate) {
   const query = `
     SELECT 
   E.event_id, 
@@ -2321,7 +2321,7 @@ WHERE
 
 //============ END OF HELPER FUNCTIONS / INDEX.HTML
 
-//==============HELPER FUNCTIONS FOR SCHEDULLE.HTML============/
+//==============HELPER FUNCTIONS FOR SCHEDULE.HTML============/
 
 /**
  * CRUD on db to add holiday data:
@@ -2404,7 +2404,7 @@ WHERE
     //console.log(rows);
     return rows;
   } catch (error) {
-    console.error('Error fetching status data for schedulle:', error);
+    console.error('Error fetching status data for schedule:', error);
     return [];
   }
 }
@@ -2416,6 +2416,6 @@ module.exports = {
   getEventRoomData, getEventTrainerData, getEventVehicleData, getEventEquipmentData, getEventMultimediaData, getEventWorkstationData, createResourceUnified,
   getSystemMessages, markAsRead, getResourceDataByCategory, createEvent, disableResource, getEventsData, getUpdateEventData, getEventResources, getReservedResources,
   confirmEvent, cancelEvent, updateParticipants, endEvent, replaceEventResources, getPlCardCount, getExCardCount, getParticipantCount, getEventType, getEventWarning,
-  getParticipantWarning, getMessageStatus, getMonthlySchedulle, addHoliday, getHoliday, getStatusTableData
+  getParticipantWarning, getMessageStatus, getMonthlySchedule, addHoliday, getHoliday, getStatusTableData
 };
 

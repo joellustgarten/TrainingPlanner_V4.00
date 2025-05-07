@@ -3,25 +3,21 @@
 
 <head>
     <meta charset="utf-8" />
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     <meta name="description"
         content="Author: Joel Lustgarten, Organization: Technical training center, Area: MA-AA/TSS2-LA, Company: Robert Bosch Ltda., Country: Brazil, Content: Technical training material" />
-    <meta name="google-site-verification" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="robots" content="all" />
-    <meta name="googlebot" content="noarchive" />
-    <meta name="googlebot" content="notranslate" />
-    <meta name="google" content="nopagereadaloud" />
-    <meta http-equiv="imagetoolbar" content="no" />
-    <meta name="rating" content="general" />
     <meta http-equiv="pragma" content="no-cache" />
     <meta name="copyright" content="© Robert Bosch Ltda." />
-    <meta name="keywords" content="Bosch, Technical training, Techical training center, Mechanics" />
+    <meta name="keywords" content="Bosch, Technical training, Technical training center, Mechanics" />
     <link rel="icon" type="image/x-icon" href="../assets/favicons/favicon.ico" />
     <link rel="stylesheet" type="text/css" href="../css/main.css" />
     <title>CTA | Training Planner</title>
 </head>
 <style>
+
+    .e-container, .e-container>*{
+        max-width: 85rem;
+    }
     .background-wrapper {
         position: relative;
         height: auto;
@@ -54,9 +50,17 @@
 
     .check_box_container {
         display: grid;
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         gap: 30px;
         align-items: start;
+    }
+
+    .check_box_container.check_box_vehicles, .check_box_container.check_box_multimedia {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .check_box_container.check_box_area {
+        grid-template-columns: repeat(5, 1fr);
     }
 
     .check_box_container .a-checkbox {
@@ -354,7 +358,7 @@
                                                 aria-label="Event search">
                                                 <i class="a-icon ui-ic-search"></i>
                                             </button>
-                                            <button type="button" class="a-search-input__icon-close">
+                                            <button type="button" class="a-search-input__icon-close" title="Close">
                                                 <i class="a-icon ui-ic-close-small"></i>
                                             </button>
                                         </div>
@@ -384,7 +388,7 @@
                                         <div class="m-form-field">
                                             <div class="a-text-field">
                                                 <label for="event_name" data-i18n="ne-name"></label>
-                                                <input type="text" id="event_name" />
+                                                <input type="text" id="event_name" title="Event name"/>
                                             </div>
                                         </div>
                                     </div>
@@ -393,7 +397,7 @@
                                         <div class="m-form-field">
                                             <div class="a-text-field">
                                                 <label for="event_name" data-i18n="ne-name_other"></label>
-                                                <input type="text" id="event_name_2" />
+                                                <input type="text" id="event_name_2" title="Event name (other)"/>
                                             </div>
                                         </div>
                                     </div>
@@ -420,13 +424,13 @@
                                         <div class="m-form-field -quarter">
                                             <div class="a-text-field">
                                                 <label for="other_event_type" data-i18n="ne-type-other"></label>
-                                                <input type="text" id="other_event_type" disabled="" />
+                                                <input type="text" id="other_event_type" disabled="" title="Other event type" />
                                             </div>
                                         </div>
                                         <div class="m-form-field -quarter">
                                             <div class="a-date-input">
                                                 <label for="start_date" data-i18n="ne-start-date"></label>
-                                                <input type="date" id="start_date" name="start_date" />
+                                                <input type="date" id="start_date" name="start_date" title="Event start date"/>
                                                 <button type="button" class="a-date-input__button"
                                                     aria-label="open dialog">
                                                     <i class="a-icon boschicon-bosch-ic-calendar-clock"></i>
@@ -436,7 +440,7 @@
                                         <div class="m-form-field -quarter">
                                             <div class="a-date-input">
                                                 <label for="end_date" data-i18n="ne-end-date"></label>
-                                                <input type="date" id="end_date" name="end_date" />
+                                                <input type="date" id="end_date" name="end_date" title="Event end date"/>
                                                 <button type="button" class="a-date-input__button"
                                                     aria-label="open dialog">
                                                     <i class="a-icon boschicon-bosch-ic-calendar-clock"></i>
@@ -449,7 +453,7 @@
                                             <div class="a-value-modificator">
                                                 <label for="min-part" data-i18n="ne-min-part"></label>
                                                 <input type="number" id="min-part" name="min-part" min="0" max="20"
-                                                    step="1" />
+                                                    step="1" title="Number of participants"/>
                                                 <button type="button" class="a-value-modificator__minus-button"
                                                     aria-label="Minus" id="min-part-minus">
                                                     <i class="a-icon boschicon-bosch-ic-less-minimize"></i>
@@ -465,7 +469,7 @@
                                         <div class="create_button"
                                             style="display: flex; width: 100%; height: auto; margin-top: 2rem; margin-bottom: 2rem;">
                                             <button type="button" id="check-event-button"
-                                                class="a-button a-button--primary -without-icon" style="margin: 0;">
+                                                class="a-button a-button--primary -without-icon" style="margin: 0;" title="Validate resources">
                                                 <span class="a-button__label" style="padding-right: 0.75rem;" data-i18n="ne-validate-button"></span>
                                             </button>
                                         </div>
@@ -530,7 +534,7 @@
                                             <div class="a-value-modificator -disabled" id="confirm_dropdown"
                                                 style="margin-top: 0;">
                                                 <label for="confirmation_days" data-i18n="ne-confirmation-days"></label>
-                                                <input type="number" min="0" max="45" step="1" id="confirmation_days" />
+                                                <input type="number" min="0" max="45" step="1" id="confirmation_days" title="Days until confirmation"/>
                                                 <button type="button" class="a-value-modificator__minus-button"
                                                     aria-label="Minus">
                                                     <i class="a-icon boschicon-bosch-ic-less-minimize"></i>
@@ -547,7 +551,7 @@
                                     <div class="o-form__row">
                                         <div class="create_button" style="display: flex; width: 100%; height: auto;">
                                             <button type="submit" id="submit-event-button"
-                                                class="a-button a-button--primary -without-icon">
+                                                class="a-button a-button--primary -without-icon" title="Create event">
                                                 <span class="a-button__label" style="padding-right: 0.75rem;" data-i18n="ne-create-button"></span>
                                             </button>
                                         </div>
@@ -589,7 +593,7 @@
 
         /**
          * load all training information:
-         * 1. Populate search suggestion with availble trainings.
+         * 1. Populate search suggestion with available trainings.
          *
          * @param {none}
          */
@@ -737,7 +741,7 @@
         /**
         * Toggle selectors based on input from other selectors
         * 1. Enable confirmation days when event status reserved is selected
-        * 2. Enable minimun number of participants when event type training p or training i is selected 
+        * 2. Enable minimal number of participants when event type training p or training i is selected 
         * @param {none}
         */
         function toggleConfirmStatus() {
@@ -896,10 +900,10 @@
         // ===== NEW_EVENT.HTML: FUNCTIONS TO VERIFY STATE OF RESOURCES  =====
 
         /**
-         * Retreve information from DB to fill resources checkboxes before form submision:
+         * Retrieve information from DB to fill resources checkboxes before form submission:
          * 1. Retrieve data from DB.
-         * 2. on button 'click' disable resource checkbox when resource not availble.
-         * 3. Cahnge checkbox style is not availble 
+         * 2. on button 'click' disable resource checkbox when resource not available.
+         * 3. Change checkbox style is not available 
          * @param {start_date, end_date}
          */
         // Function to get start date and end date to verify resource status for the proposed event
@@ -960,7 +964,7 @@
             }
         }
 
-        //Function to disable checkboxes and change style for unabailble resources
+        //Function to disable checkboxes and change style for unavailable resources
         function selectCheckboxesByResourceIds(containerId, checkboxGroupName, resourceIds) {
             // Get all checkboxes in the specified container
             const checkboxes = document.querySelectorAll(`#${containerId} input[name="${checkboxGroupName}[]"]`);
@@ -1024,15 +1028,15 @@
         // ===== NEW_EVENT.HTML: FUNCTIONS TO CREATE EVENT  =====
 
         /**
-         * Retreve information from form fields and checkboxes to create event:
-         * 1. Retrieve form imput text fields.
+         * Retrieve information from form fields and checkboxes to create event:
+         * 1. Retrieve form input text fields.
          * 2. Validate empty fields.
          * 3. Send data to preload, main and db to validate resources".
          * 4. Create event CRUD on bd.js based on form data
          * @param {none}
          */
 
-        // Get selected checkboxes function from form to pass to serverside throug additional function
+        // Get selected checkboxes function from form to pass to server side through additional function
         function getSelectedCheckboxes(containerId, checkboxGroupName) {
             const checkboxes = document.querySelectorAll(`#${containerId} input[name="${checkboxGroupName}[]"]:checked`);
             return Array.from(checkboxes).map(checkbox => ({
@@ -1076,7 +1080,7 @@
             }
             if (eventType === 'Training P' || eventType === 'Training I') {
                 if (!min_part || isNaN(min_part) || min_part <= 0) {
-                    missingFields.push('Valid minimun participants');
+                    missingFields.push('Valid minimal participants');
                 }
             }
 

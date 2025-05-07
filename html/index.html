@@ -3,20 +3,12 @@
 
 <head>
   <meta charset="utf-8" />
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
   <meta name="description"
     content="Author: Joel Lustgarten, Organization: Technical training center, Area: MA-AA/TSS2-LA, Company: Robert Bosch Ltda., Country: Brazil, Content: Technical training material" />
-  <meta name="google-site-verification" content="" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="robots" content="all" />
-  <meta name="googlebot" content="noarchive" />
-  <meta name="googlebot" content="notranslate" />
-  <meta name="google" content="nopagereadaloud" />
-  <meta http-equiv="imagetoolbar" content="no" />
-  <meta name="rating" content="general" />
   <meta http-equiv="pragma" content="no-cache" />
   <meta name="copyright" content="© Robert Bosch Ltda." />
-  <meta name="keywords" content="Bosch, Technical training, Techical training center, Mechanics" />
+  <meta name="keywords" content="Bosch, Technical training, Technical training center, Mechanics" />
   <link rel="icon" type="image/x-icon" href="../assets/favicons/favicon.ico" />
   <link rel="stylesheet" type="text/css" href="../css/main.css" />
   <title>CTA | Training Planner</title>
@@ -184,7 +176,7 @@
     background-color: var(--minor-signal-warning__enabled__fill__default);
   }
 
-  .side_stripe.succes {
+  .side_stripe.success {
     background-color: var(--major-signal-success__enabled__fill__default);
   }
 
@@ -560,7 +552,7 @@
                 <div class="m-dialog__content">
                   <div class="dialog__headline" data-i18n="index-message-cont-subtitle"></div>
                   <ul class="a-list dashboard">
-                    <li class="a-menu-item -indent status" role="none" style="padding-left: 0;">
+                    <li class="a-menu-item -indent status" style="padding-left: 0;">
                       <div class="side_stripe notification"></div>
                       <div class="a-menu-item__wrapper status_message">
                         <i class="a-icon a-menu-item__state boschicon-bosch-ic-calendar-date-single"
@@ -575,7 +567,7 @@
                         </button>
                       </div>
                     </li>
-                    <li class="a-menu-item -indent status" role="none" style="padding-left: 0;">
+                    <li class="a-menu-item -indent status" style="padding-left: 0;">
                       <div class="side_stripe alert"></div>
                       <div class="a-menu-item__wrapper status_message">
                         <i class="a-icon a-menu-item__state boschicon-bosch-ic-people"
@@ -590,7 +582,7 @@
                         </button>
                       </div>
                     </li>
-                    <li class="a-menu-item -indent status" role="none" style="padding-left: 0;">
+                    <li class="a-menu-item -indent status" style="padding-left: 0;">
                       <div class="side_stripe warning"></div>
                       <div class="a-menu-item__wrapper status_message">
                         <i class="a-icon a-menu-item__state boschicon-bosch-ic-paperplane"
@@ -605,12 +597,12 @@
                         </button>
                       </div>
                     </li>
-                    <li class="a-menu-item -indent status" role="none" style="padding-left: 0;">
-                      <div class="side_stripe succes"></div>
+                    <li class="a-menu-item -indent status" style="padding-left: 0;">
+                      <div class="side_stripe success"></div>
                       <div class="a-menu-item__wrapper status_message">
                         <i class="a-icon a-menu-item__state ui-ic-checkmark"></i>
                         <button type="button" role="menuitem" class="a-menu-item__side-menu dashboard_button"
-                          aria-disabled="false" aria-label="open group" id="schedulle">
+                          aria-disabled="false" aria-label="open group" id="schedule">
                           <i class="a-icon boschicon-bosch-ic-calendar"></i>
                           <span class="a-menu-item__label" data-i18n="calendar-label"></span>
                           <span class="a-menu-item__label" data-i18n="calendar-label-warning"></span>
@@ -679,7 +671,7 @@
 
     document.getElementById('loginConfirm').addEventListener('click', login);
 
-    document.getElementById('schedulle').addEventListener('click', async () => {
+    document.getElementById('schedule').addEventListener('click', async () => {
       await window.api.openPopup();
     });
 
@@ -691,7 +683,7 @@
       initializeData();
       initializeNotifications();
       getEventWarningStatus();
-      getParticipanttWarningStatus();
+      getParticipantWarningStatus();
       getMessageCount();
 
       /**
@@ -807,7 +799,7 @@
         const resultParticipants = await window.api.getParticipantCount();
 
         hidePersistentNotification();
-        if (resultPlanned && resultPerformed && resultParticipants) {
+        if (resultPlanned || resultPerformed || resultParticipants) {
           showNotification('Card data retrieved', "success");
           plannedFigure.innerText = resultPlanned;
           performedFigure.innerText = resultPerformed;
@@ -852,7 +844,7 @@
     * Function to fetch event deadline info
     * 1. Retrieves deadline information
     * 2. Calculates warning trigger dates
-    * 3. Fill deadline cnotification
+    * 3. Fill deadline notification
     * 
     * @param input {event}
     * @param output {none}
@@ -915,7 +907,7 @@
     * @param input {event}
     * @param output {none}
     */
-    async function getParticipanttWarningStatus() {
+    async function getParticipantWarningStatus() {
       const badgeParticipants = document.getElementById('badge_participants');
       const container = document.getElementById('participant_warning_container');
       const daysToCheck = 30;
@@ -1006,7 +998,7 @@
           message = `There are ${resultWarning} unread messages, please go to 'messages' to review message history`;
           break;
           case 'es':
-          message = `Hay ${resultWarning} mensajes sin leer, vaya a 'mensajes' para revisar el historico de mensajes`;
+          message = `Hay ${resultWarning} mensajes sin leer, ir a 'mensajes' para revisar el historico de mensajes`;
           break;
           case 'pt':
           message = `Há ${resultWarning} mensagens não lidas, vá para 'mensagens' para revisar o histórico de mensagens`;
