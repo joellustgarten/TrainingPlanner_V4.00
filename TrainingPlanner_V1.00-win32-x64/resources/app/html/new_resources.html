@@ -1,0 +1,1862 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="description"
+        content="Author: Joel Lustgarten, Organization: Technical training center, Area: MA-AA/TSS2-LA, Company: Robert Bosch Ltda., Country: Brazil, Content: Technical training material" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta name="copyright" content="© Robert Bosch Ltda." />
+    <meta name="keywords" content="Bosch, Technical training, Technical training center, Mechanics" />
+    <link rel="icon" type="image/x-icon" href="../assets/icons/favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="../css/main.css" />
+    <title>CTA | Training Planner</title>
+</head>
+<style>
+    .background-wrapper {
+        position: relative;
+        height: auto;
+        min-height: 100vh;
+    }
+
+    .preview-single {
+        align-items: center;
+        box-sizing: border-box;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .component-preview__details {
+        display: block;
+        width: 100%;
+        overflow-y: auto;
+        padding: 2rem;
+    }
+
+
+    .form_container {
+        display: none;
+    }
+
+    .serviceTypeV {
+        display: none;
+    }
+
+    .serviceTypeE {
+        display: none;
+    }
+
+    /* Styling for notifications */
+    #notification-container {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        z-index: 1000;
+        /* By default hidden */
+        display: none;
+    }
+
+    #notification-container.info {
+        background-color: #2196F3;
+        color: #fff;
+    }
+
+    #notification-container.success {
+        background-color: #4CAF50;
+        color: #fff;
+    }
+
+    #notification-container.error {
+        background-color: #F44336;
+        color: #fff;
+    }
+
+    #notification-container.loading {
+        background-color: #555;
+        color: #fff;
+    }
+</style>
+
+<body>
+    <div class="wrapper -light-mode" style="width: 100vw; height: 100vh">
+        <div class="background-wrapper -primary">
+            <header class="o-minimal-header -primary">
+                <div class="o-minimal-header__supergraphic"></div>
+                <div class="o-minimal-header__top">
+                    <div class="o-minimal-header__burger">
+                        <button type="button" class="a-button a-button--integrated -without-label"
+                            aria-label="Side Navigation">
+                            <i class="a-icon a-button__icon ui-ic-menu"></i>
+                        </button>
+                    </div>
+                    <div class="o-minimal-header__title" data-i18n="new-resource-title"></div>
+                    <ul class="o-minimal-header__actions">
+                        <li>
+                            <button type="button" class="a-button a-button--integrated -without-label" style="
+                    align-items: center;
+                    text-align: center;
+                    margin-right: 30px;
+                  " id="userButton">
+                                <i class="a-icon a-button__icon boschicon-bosch-ic-my-brand-frame"></i>
+                                <span style="white-space: nowrap">User:
+                                    <span style="white-space: nowrap" id="username_display">Not
+                                        logged in</span></span>
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="a-button a-button--integrated -without-label" id="logoutButton"
+                                style="
+                    align-items: center;
+                    text-align: center;
+                    margin-right: 30px;
+                  ">
+                                <i class="a-icon a-button__icon boschicon-bosch-ic-logout"></i>
+                                <span style="white-space: nowrap">Log out</span>
+                            </button>
+                        </li>
+                    </ul>
+                    <a href="/" class="o-minimal-header__logo" aria-label="Bosch Logo">
+                        <svg width="108px" height="24px" viewBox="0 0 108 24" xmlns="http://www.w3.org/2000/svg">
+                            <path id="bosch-logo-text"
+                                d="M78.19916,15.03735c0,3.46057-3.1618,5.1535-6.12445,5.1535c-3.41083,0-5.17847-1.29462-6.57263-2.96265 l2.51453-2.48962c1.07056,1.36926,2.46472,2.0415,4.0083,2.0415c1.29462,0,2.14105-0.62244,2.14105-1.56848 c0-0.99585-0.77179-1.31952-2.83813-1.74274l-0.54773-0.12451c-2.48962-0.52283-4.53113-1.91699-4.53113-4.75519 c0-3.112,2.53943-4.97925,5.87549-4.97925c2.8382,0,4.65564,1.21991,5.77594,2.48962l-2.46472,2.43988 c-0.82831-0.91748-2.00061-1.44946-3.23651-1.46893c-0.89624,0-1.91699,0.42328-1.91699,1.46893 c0,0.97095,1.07056,1.31946,2.41492,1.59332l0.54773,0.12451C75.51038,10.73029,78.24896,11.42737,78.19916,15.03735z  M64.80499,11.92529c0,4.65558-2.66394,8.29047-7.26971,8.29047c-4.58093,0-7.26971-3.63489-7.26971-8.29047 c0-4.63068,2.68878-8.29047,7.26971-8.29047C62.14105,3.63483,64.80499,7.29462,64.80499,11.92529z M60.92114,11.92529 c0-2.46472-1.1452-4.48132-3.38586-4.48132s-3.36102,1.9917-3.36102,4.48132s1.12036,4.50623,3.36102,4.50623 S60.92114,14.43982,60.92114,11.92529z M87.06226,16.43152c-1.74274,0-3.56018-1.44397-3.56018-4.60583 c0-2.81323,1.69293-4.38171,3.46057-4.38171c1.39423,0,2.21576,0.64728,2.8631,1.76764l3.18671-2.11621 c-1.59338-2.41492-3.48547-3.43567-6.09961-3.43567c-4.78009,0-7.36926,3.70953-7.36926,8.19086 c0,4.70544,2.86304,8.39008,7.31946,8.39008c3.13696,0,4.63074-1.09546,6.24902-3.43567l-3.21167-2.16602 C89.25311,15.68463,88.55603,16.43152,87.06226,16.43152z M48.97095,15.46057c0,2.66388-2.43982,4.40662-4.92944,4.40662H35.9502 V4.0332h7.44397c2.8382,0,4.9046,1.44397,4.9046,4.35681c0.01666,1.43036-0.85675,2.72058-2.19086,3.23651 C46.10791,11.65143,48.97095,12.29877,48.97095,15.46057z M39.80914,10.25726h2.83813 c0.02155,0.00134,0.04309,0.00226,0.06464,0.00269c0.81476,0.01575,1.48804-0.6319,1.50385-1.44666 c0.00342-0.0567,0.00342-0.11353,0-0.17017c-0.047-0.77802-0.71576-1.37061-1.49377-1.32361h-2.88794L39.80914,10.25726z  M44.76349,14.98755c0-0.92114-0.67218-1.54358-2.09131-1.54358h-2.81323v3.11206h2.88794 C43.91699,16.55603,44.76349,16.13275,44.76349,14.98755z M103.64313,4.03326v5.82568H98.8382V4.03326h-4.15771v15.83398h4.15771 v-6.24896h4.80493v6.24896h4.15771V4.03326H103.64313z" />
+                            <path id="bosch-logo-anker"
+                                d="M12,0C5.37256,0,0,5.37256,0,12c0,6.62738,5.37256,12,12,12s12-5.37262,12-12C23.99646,5.37402,18.62598,0.00354,12,0z  M12,22.87964C5.99133,22.87964,1.12036,18.00867,1.12036,12S5.99133,1.1203,12,1.1203S22.87964,5.99133,22.87964,12 C22.87354,18.0061,18.0061,22.87354,12,22.87964z M19.50293,7.05475c-0.66852-1.01306-1.53552-1.88-2.54858-2.54852h-0.82159 v4.10785H7.89209V4.50623H7.04565c-4.13873,2.73114-5.27972,8.30029-2.54858,12.43896 c0.66852,1.01306,1.53552,1.88007,2.54858,2.54858h0.84644v-4.10791h8.24066v4.10791h0.82159 C21.09308,16.76257,22.23407,11.19348,19.50293,7.05475z M6.74689,17.87549c-3.24493-2.88354-3.5379-7.85168-0.65436-11.09668 c0.20508-0.23077,0.42358-0.44928,0.65436-0.65436V17.87549z M16.13275,14.24066H7.89209V9.73444h8.24066V14.24066z  M17.84827,17.25549c-0.18768,0.2088-0.38629,0.40747-0.59515,0.59509v-2.48962V8.61407V6.12445 C20.49121,9.03387,20.75763,14.0174,17.84827,17.25549z" />
+                        </svg>
+                    </a>
+                    <div class="o-minimal-header__falafel">
+                        <nav class="o-context-menu" aria-label="Context Menu Navigation undefined" aria-hidden="false">
+                            <button type="button"
+                                class="a-button a-button--integrated -without-label o-context-menu__trigger"
+                                data-frok-action="open" aria-haspopup="true" aria-label="Open Context Menu">
+                                <i class="a-icon a-button__icon boschicon-bosch-ic-options"></i>
+                            </button>
+                            <button type="button"
+                                class="a-button a-button--integrated -without-label o-context-menu__trigger"
+                                data-frok-action="close" aria-haspopup="false" aria-label="Close Context Menu">
+                                <i class="a-icon a-button__icon boschicon-bosch-ic-close"></i>
+                            </button>
+                            <div class="m-popover">
+                                <div class="a-box -floating">
+                                    <div class="m-popover__content">
+                                        <ul class="m-menu-group" role="menubar" aria-orientation="vertical">
+                                            <li class="a-menu-item" role="none">
+                                                <div class="a-menu-item__wrapper">
+                                                    <button href="#" role="menuitem" class="a-menu-item__link"
+                                                        id="smallLogoutButton">
+                                                        <i class="a-icon boschicon-bosch-ic-my-brand-frame"></i>
+                                                        <span class="a-menu-item__label">Log out</span>
+                                                    </button>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <nav class="m-side-navigation -contrast" aria-label="Side Navigation" aria-hidden="false">
+                <div class="m-side-navigation__header">
+                    <div class="m-side-navigation__header__label -size-l highlight">
+                        Training Planner V1.00
+                    </div>
+                    <button type="button"
+                        class="a-button a-button--integrated -without-label m-side-navigation__header__trigger -open"
+                        aria-haspopup="false" aria-label="Open Side Navigation" tabindex="0">
+                        <i class="a-icon a-button__icon boschicon-bosch-ic-list-view-mobile"></i>
+                    </button>
+                    <button type="button"
+                        class="a-button a-button--integrated -without-label m-side-navigation__header__trigger -close"
+                        aria-haspopup="false" aria-label="Close Side Navigation" tabindex="-1">
+                        <i class="a-icon a-button__icon boschicon-bosch-ic-close"></i>
+                    </button>
+                </div>
+                <ul class="m-menu-group" role="menubar" aria-orientation="vertical">
+                    <li class="a-menu-item" role="none">
+                        <div class="a-menu-item__wrapper">
+                            <a href="#" role="menuitem" class="a-menu-item__link" aria-disabled="false"
+                                data-target="index.html"">
+                        <i class=" a-icon boschicon-bosch-ic-desktop-application-3d"></i>
+                                <span class="a-menu-item__label">Home</span>
+                            </a>
+                        </div>
+                    </li>
+                    <li class="a-menu-item" role="none">
+                        <div class="a-menu-item__wrapper">
+                            <button type="button" role="menuitem" class="a-menu-item__group" aria-disabled="false"
+                                aria-controls="group-id-1" aria-label="open group">
+                                <i class="a-icon boschicon-bosch-ic-calendar-date-single"></i>
+                                <span class="a-menu-item__label" data-i18n="event-menu"></span>
+                                <i class="a-icon ui-ic-down-small"></i>
+                            </button>
+                        </div>
+                        <ul id="group-id-1" class="m-menu-group__group" role="menu">
+                            <li class="a-menu-item -indent" role="none">
+                                <div class="a-menu-item__wrapper">
+                                    <a href="#" role="menuitem" class="a-menu-item__link" aria-disabled="false"
+                                        data-target="view_event.html">
+                                        <span class="a-menu-item__label" data-i18n="event-menu-1"></span>
+                                    </a>
+                                </div>
+                            </li>
+                            <li class="a-menu-item -disabled -indent" role="none">
+                                <div class="a-menu-item__wrapper">
+                                    <a href="#" role="menuitem" class="a-menu-item__link" aria-disabled="true"
+                                        tabindex="-1" data-target="new_event.html">
+                                        <span class="a-menu-item__label" data-i18n="event-menu-2"></span>
+                                    </a>
+                                </div>
+                            </li>
+                            <li class="a-menu-item -disabled -indent" role="none">
+                                <div class="a-menu-item__wrapper">
+                                    <a href="#" role="menuitem" class="a-menu-item__link" aria-disabled="false"
+                                        data-target="update_event.html">
+                                        <span class="a-menu-item__label" data-i18n="event-menu-3"></span>
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="a-menu-item" role="none">
+                        <div class="a-menu-item__wrapper">
+                            <button type="button" role="menuitem" class="a-menu-item__group" aria-disabled="true"
+                                tabindex="-1" aria-controls="group-id-2" aria-label="open group">
+                                <i class="a-icon boschicon-bosch-ic-material-list"></i>
+                                <span class="a-menu-item__label" data-i18n="resources-menu"></span>
+                                <i class="a-icon ui-ic-down-small"></i>
+                            </button>
+                        </div>
+                        <ul id="group-id-2" class="m-menu-group__group" role="menu">
+                            <li class="a-menu-item -indent" role="none">
+                                <div class="a-menu-item__wrapper">
+                                    <a href="#" role="menuitem" class="a-menu-item__link" aria-disabled="false"
+                                        data-target="view_resources.html">
+                                        <span class="a-menu-item__label" data-i18n="resources-menu-1"></span>
+                                    </a>
+                                </div>
+                            </li>
+                            <li class="a-menu-item -disabled -indent" role="none">
+                                <div class="a-menu-item__wrapper">
+                                    <a href="#" role="menuitem" class="a-menu-item__link" aria-disabled="false"
+                                        data-target="new_resources.html">
+                                        <span class="a-menu-item__label" data-i18n="resources-menu-2"></span>
+                                    </a>
+                                </div>
+                            </li>
+                            <li class="a-menu-item -disabled -indent" role="none">
+                                <div class="a-menu-item__wrapper">
+                                    <a href="#" role="menuitem" class="a-menu-item__link" aria-disabled="false"
+                                        data-target="update_resources.html">
+                                        <span class="a-menu-item__label" data-i18n="resources-menu-3"></span>
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="a-menu-item" role="none">
+                        <div class="a-menu-item__wrapper">
+                            <button type="button" role="menuitem" class="a-menu-item__group" aria-disabled="false"
+                                aria-controls="group-id-3" aria-label="open group">
+                                <i class="a-icon boschicon-bosch-ic-message"></i>
+                                <span class="a-menu-item__label" data-i18n="message-menu"></span>
+                                <i class="a-icon ui-ic-down-small"></i>
+                            </button>
+                        </div>
+                        <ul id="group-id-3" class="m-menu-group__group" role="menu">
+                            <li class="a-menu-item -disabled -indent" role="none">
+                                <div class="a-menu-item__wrapper">
+                                    <a href="#" role="menuitem" class="a-menu-item__link" aria-disabled="false"
+                                        data-target="view_messages.html">
+                                        <span class="a-menu-item__label" data-i18n="message-menu-1"></span>
+                                    </a>
+                                </div>
+                            </li>
+                            <li class="a-menu-item -indent" role="none">
+                                <div class="a-menu-item__wrapper">
+                                    <a href="#" role="menuitem" class="a-menu-item__link" aria-disabled="false"
+                                        data-target="reminders.html">
+                                        <span class="a-menu-item__label" data-i18n="message-menu-2"></span>
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="a-menu-item" role="none">
+                        <div class="a-menu-item__wrapper">
+                            <a href="#" role="menuitem" class="a-menu-item__link" aria-disabled="false"
+                                data-target="settings.html">
+                                <i class="a-icon boschicon-bosch-ic-settings"></i>
+                                <span class="a-menu-item__label" data-i18n="settings-link"></span>
+                            </a>
+                        </div>
+                    </li>
+                    <li class="a-menu-item -disabled" role="none">
+                        <div class="a-menu-item__wrapper">
+                            <a href="#" role="menuitem" class="a-menu-item__link" aria-disabled="true" tabindex="-1"
+                                data-target="statistic.html">
+                                <i class="a-icon boschicon-bosch-ic-chart-line"></i>
+                                <span class="a-menu-item__label" data-i18n="statistics-link"></span>
+                            </a>
+                        </div>
+                    </li>
+                    <li class="a-menu-item" role="none">
+                        <div class="a-menu-item__wrapper">
+                            <a href="#" role="menuitem" class="a-menu-item__link" aria-disabled="false"
+                                data-target="version.html"">
+                        <i class=" a-icon boschicon-bosch-ic-alert-info"></i>
+                                <span class="a-menu-item__label" data-i18n="version-link"></span>
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+            <div class="e-container">
+                <main style="padding-top: 6rem">
+                    <div class="preview-single">
+
+                        <!-- Headline for trainer registry -->
+
+                        <div class="a-tile -secondary" id="cont1" style="width: 100%; margin-bottom: 20px;">
+                            <a href="#" aria-label="Link to open create form" class="a-tile__link">
+                                <div class="a-text" style="padding:2rem">
+                                    <span class="-size-s" style="display:block;margin-bottom:0.5rem">
+                                        Category
+                                    </span>
+                                    <h3 class="-size-xl" style="margin-bottom:0.5rem;margin-top:0">
+                                        Create new trainer
+                                        <i class="a-icon ui-ic-inline-right-bold"
+                                            style="margin-left:0.5rem;font-size:24px;vertical-align:baseline"></i>
+                                    </h3>
+                                    <p class="-size-m" style="margin:0">Trainer information</p>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- End of trainer headline -->
+
+                        <!-- New trainer form -->
+
+                        <div class="form_container -floating-shadow-s" data-container-number="cont1"
+                            style="width: 80%; margin: auto; margin-bottom: 20px;">
+                            <div class="o-form new">
+                                <form aria-label="New trainer" id="newTrainer" style="width: 80%; margin: auto;"
+                                    onsubmit="addTrainer(event)">
+                                    <h4>Trainer information</h4>
+                                    <div class="m-form-field">
+                                        <div class="a-text-field">
+                                            <label for="trainerName">Trainer complete name*</label>
+                                            <input type="text" id="trainerName" />
+                                        </div>
+                                    </div>
+                                    <p class="-size-s">Required fields *</p>
+                                    <h4>Topics</h4>
+                                    <p style="margin-bottom: 10px;">
+                                        On which topic is the trainer proficient?
+                                    </p>
+                                    <div class="m-form-field">
+                                        <div class="a-dropdown a-dropdown--dynamic-width">
+                                            <label for="t1">Topic</label>
+                                            <select id="t1" aria-label="topic 1">
+                                                <option value="" selected disabled>Select an option</option>
+                                                <option value="Gasoline engine management diagnostics">Gasoline engine
+                                                    management diagnostics
+                                                </option>
+                                                <option value="Electronic gasoline injection">Electronic gasoline
+                                                    injection</option>
+                                                <option value="Direct gasoline injection">Direct gasoline injection
+                                                </option>
+                                                <option value="Vehicle electronics">Vehicle electronics</option>
+                                                <option value="Vehicle comfort systems (AC, Infotainment)">Vehicle
+                                                    comfort systems (AC,
+                                                    Infotainment)</option>
+                                                <option
+                                                    value="Vehicle mechanical systems (Engine, Transmission, suspension)">
+                                                    Vehicle mechanical
+                                                    systems (Engine, Transmission, suspension)</option>
+                                                <option value="Vehicle Drive and control systems (Brakes, steering)">
+                                                    Vehicle Drive and control
+                                                    systems (Brakes, steering)</option>
+                                                <option value="Vehicle active safety systems (ABS, ESP, TCS)">Vehicle
+                                                    active safety systems
+                                                    (ABS, ESP, TCS)</option>
+                                                <option value="Vehicle drivers assistance ADAS">Vehicle drivers assistance
+                                                    ADAS</option>
+                                                <option value="Automotive networks">Automotive networks</option>
+                                                <option value="Diesel engine management diagnostics">Diesel engine
+                                                    management diagnostics
+                                                </option>
+                                                <option value="Diesel emission after treatment diagnostics">Diesel
+                                                    emission after treatment
+                                                    diagnostics</option>
+                                                <option value="Diesel mechanical component repair">Diesel mechanical
+                                                    component repair</option>
+                                                <option value="Diesel electronic component repair">Diesel electronic
+                                                    component repair</option>
+                                                <option value="Diesel after treatment component repair (DENOX)">Diesel
+                                                    after treatment component
+                                                    repair (DENOX)</option>
+                                                <option value="2 wheeler technology">2 wheeler technology</option>
+                                                <option value="Administrative | Content creation">Administrative | Content creation</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="m-form-field">
+                                        <div class="a-dropdown a-dropdown--dynamic-width">
+                                            <label for="t2">Topic</label>
+                                            <select id="t2" aria-label="topic 2">
+                                                <option value="" selected disabled>Select an option</option>
+                                                <option value="Gasoline engine management diagnostics">Gasoline engine
+                                                    management diagnostics
+                                                </option>
+                                                <option value="Electronic gasoline injection">Electronic gasoline
+                                                    injection</option>
+                                                <option value="Direct gasoline injection">Direct gasoline injection
+                                                </option>
+                                                <option value="Vehicle electronics">Vehicle electronics</option>
+                                                <option value="Vehicle comfort systems (AC, Infotainment)">Vehicle
+                                                    comfort systems (AC,
+                                                    Infotainment)</option>
+                                                <option
+                                                    value="Vehicle mechanical systems (Engine, Transmission, suspension)">
+                                                    Vehicle mechanical
+                                                    systems (Engine, Transmission, suspension)</option>
+                                                <option value="Vehicle Drive and control systems (Brakes, steering)">
+                                                    Vehicle Drive and control
+                                                    systems (Brakes, steering)</option>
+                                                <option value="Vehicle active safety systems (ABS, ESP, TCS)">Vehicle
+                                                    active safety systems
+                                                    (ABS, ESP, TCS)</option>
+                                                <option value="Vehicle drivers assistance ADAS">Vehicle drivers assistance
+                                                    ADAS</option>
+                                                <option value="Automotive networks">Automotive networks</option>
+                                                <option value="Diesel engine management diagnostics">Diesel engine
+                                                    management diagnostics
+                                                </option>
+                                                <option value="Diesel emission after treatment diagnostics">Diesel
+                                                    emission after treatment
+                                                    diagnostics</option>
+                                                <option value="Diesel mechanical component repair">Diesel mechanical
+                                                    component repair</option>
+                                                <option value="Diesel electronic component repair">Diesel electronic
+                                                    component repair</option>
+                                                <option value="Diesel after treatment component repair (DENOX)">Diesel
+                                                    after treatment component
+                                                    repair (DENOX)</option>
+                                                <option value="2 wheeler technology">2 wheeler technology</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="m-form-field">
+                                        <div class="a-dropdown a-dropdown--dynamic-width">
+                                            <label for="t3">Topic</label>
+                                            <select id="t3" aria-label="topic 3">
+                                                <option value="" selected disabled>Select an option</option>
+                                                <option value="Gasoline engine management diagnostics">Gasoline engine
+                                                    management diagnostics
+                                                </option>
+                                                <option value="Electronic gasoline injection">Electronic gasoline
+                                                    injection</option>
+                                                <option value="Direct gasoline injection">Direct gasoline injection
+                                                </option>
+                                                <option value="Vehicle electronics">Vehicle electronics</option>
+                                                <option value="Vehicle comfort systems (AC, Infotainment)">Vehicle
+                                                    comfort systems (AC,
+                                                    Infotainment)</option>
+                                                <option
+                                                    value="Vehicle mechanical systems (Engine, Transmission, suspension)">
+                                                    Vehicle mechanical
+                                                    systems (Engine, Transmission, suspension)</option>
+                                                <option value="Vehicle Drive and control systems (Brakes, steering)">
+                                                    Vehicle Drive and control
+                                                    systems (Brakes, steering)</option>
+                                                <option value="Vehicle active safety systems (ABS, ESP, TCS)">Vehicle
+                                                    active safety systems
+                                                    (ABS, ESP, TCS)</option>
+                                                <option value="Vehicle drivers assistance ADAS">Vehicle drivers assistance
+                                                    ADAS</option>
+                                                <option value="Automotive networks">Automotive networks</option>
+                                                <option value="Diesel engine management diagnostics">Diesel engine
+                                                    management diagnostics
+                                                </option>
+                                                <option value="Diesel emission after treatment diagnostics">Diesel
+                                                    emission after treatment
+                                                    diagnostics</option>
+                                                <option value="Diesel mechanical component repair">Diesel mechanical
+                                                    component repair</option>
+                                                <option value="Diesel electronic component repair">Diesel electronic
+                                                    component repair</option>
+                                                <option value="Diesel after treatment component repair (DENOX)">Diesel
+                                                    after treatment component
+                                                    repair (DENOX)</option>
+                                                <option value="2 wheeler technology">2 wheeler technology</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="m-form-field">
+                                        <div class="a-dropdown a-dropdown--dynamic-width">
+                                            <label for="t4">Topic</label>
+                                            <select id="t4" aria-label="topic 4">
+                                                <option value="" selected disabled>Select an option</option>
+                                                <option value="Gasoline engine management diagnostics">Gasoline engine
+                                                    management diagnostics
+                                                </option>
+                                                <option value="Electronic gasoline injection">Electronic gasoline
+                                                    injection</option>
+                                                <option value="Direct gasoline injection">Direct gasoline injection
+                                                </option>
+                                                <option value="Vehicle electronics">Vehicle electronics</option>
+                                                <option value="Vehicle comfort systems (AC, Infotainment)">Vehicle
+                                                    comfort systems (AC,
+                                                    Infotainment)</option>
+                                                <option
+                                                    value="Vehicle mechanical systems (Engine, Transmission, suspension)">
+                                                    Vehicle mechanical
+                                                    systems (Engine, Transmission, suspension)</option>
+                                                <option value="Vehicle Drive and control systems (Brakes, steering)">
+                                                    Vehicle Drive and control
+                                                    systems (Brakes, steering)</option>
+                                                <option value="Vehicle active safety systems (ABS, ESP, TCS)">Vehicle
+                                                    active safety systems
+                                                    (ABS, ESP, TCS)</option>
+                                                <option value="Vehicle drivers assistance ADAS">Vehicle drivers assistance
+                                                    ADAS</option>
+                                                <option value="Automotive networks">Automotive networks</option>
+                                                <option value="Diesel engine management diagnostics">Diesel engine
+                                                    management diagnostics
+                                                </option>
+                                                <option value="Diesel emission after treatment diagnostics">Diesel
+                                                    emission after treatment
+                                                    diagnostics</option>
+                                                <option value="Diesel mechanical component repair">Diesel mechanical
+                                                    component repair</option>
+                                                <option value="Diesel electronic component repair">Diesel electronic
+                                                    component repair</option>
+                                                <option value="Diesel after treatment component repair (DENOX)">Diesel
+                                                    after treatment component
+                                                    repair (DENOX)</option>
+                                                <option value="2 wheeler technology">2 wheeler technology</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="o-form__row">
+                                        <div class="m-form-field -half">
+                                            <div class="a-text-field">
+                                                <label for="otherTopic">Other Topics</label>
+                                                <input type="text" id="otherTopic" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h4>Languages</h4>
+                                    <p>
+                                        Which languages is the trainer able to communicate in fluently?
+                                    </p>
+                                    <div class="m-form-field m-form-field--checkbox">
+                                        <div class="a-checkbox">
+                                            <input type="checkbox" id="pt" />
+                                            <label for="pt">Portuguese</label>
+                                        </div>
+                                    </div>
+                                    <div class="m-form-field m-form-field--checkbox">
+                                        <div class="a-checkbox">
+                                            <input type="checkbox" id="es" />
+                                            <label for="es">Spanish</label>
+                                        </div>
+                                    </div>
+                                    <div class="m-form-field m-form-field--checkbox">
+                                        <div class="a-checkbox">
+                                            <input type="checkbox" id="en" />
+                                            <label for="en">English</label>
+                                        </div>
+                                    </div>
+                                    <div class="o-form__row">
+                                        <div class="m-form-field -quarter">
+                                            <div class="a-text-field">
+                                                <label for="addLang">Other language</label>
+                                                <input type="text" id="addLang" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h4>Travel availability</h4>
+                                    <p>
+                                        What is the trainer's travel availability?
+                                    </p>
+                                    <div class="m-form-field m-form-field--radio">
+                                        <div class="a-radio-button">
+                                            <input type="radio" id="travelAbleY" name="travelAble" value="Yes" />
+                                            <label for="travelAbleY">Yes</label>
+                                        </div>
+                                    </div>
+                                    <div class="m-form-field m-form-field--radio">
+                                        <div class="a-radio-button">
+                                            <input type="radio" id="travelAbleN" name="travelAble" value="No" />
+                                            <label for="travelAbleN">No</label>
+                                        </div>
+                                    </div>
+                                    <p>
+                                        If yes, please select type of travel
+                                    </p>
+                                    <div class="m-form-field m-form-field--checkbox">
+                                        <div class="a-checkbox">
+                                            <input type="checkbox" id="travelNational" name="travelNational" />
+                                            <label for="travelNational">Local / national</label>
+                                        </div>
+                                    </div>
+                                    <div class="m-form-field m-form-field--checkbox">
+                                        <div class="a-checkbox">
+                                            <input type="checkbox" id="travelInternational"
+                                                name="travelInternational" />
+                                            <label for="travelInternational">International</label>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="a-button a-button--primary -without-icon"
+                                        data-frok-action="submitTrainer">
+                                        <span class="a-button__label">Submit form</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- End new trainer form -->
+
+                        <!-- Headline for vehicle registry -->
+
+                        <div class="a-tile -secondary" id="cont2" style="width: 100%; margin-bottom: 20px;">
+                            <a href="#" aria-label="Link to open create form" class="a-tile__link">
+                                <div class="a-text" style="padding:2rem">
+                                    <span class="-size-s" style="display:block;margin-bottom:0.5rem">
+                                        Category
+                                    </span>
+                                    <h3 class="-size-xl" style="margin-bottom:0.5rem;margin-top:0">
+                                        Create new vehicle
+                                        <i class="a-icon ui-ic-inline-right-bold"
+                                            style="margin-left:0.5rem;font-size:24px;vertical-align:baseline"></i>
+                                    </h3>
+                                    <p class="-size-m" style="margin:0">Vehicle information</p>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- End of  vehicle headline -->
+
+                        <!-- New vehicle form -->
+
+                        <div class="form_container -floating-shadow-s" data-container-number="cont2"
+                            style="width: 80%; margin: auto; margin-bottom: 20px;">
+                            <div class="o-form new" style="width: 80%; margin: auto;">
+                                <form aria-label="New vehicle" id="newVehicle" style="width: 80%; margin: auto;"
+                                    onsubmit="addVehicle(event)">
+                                    <h4>Vehicle information</h4>
+                                    <div class=" o-form__row">
+                                        <div class="m-form-field -half">
+                                            <div class="a-text-field">
+                                                <label for="license" title="License plate">License plate or ID*</label>
+                                                <input type="text" id="license" />
+                                            </div>
+                                        </div>
+                                        <div class="a-dropdown a-dropdown--dynamic-width">
+                                            <label for="vehType" title="Vehicle type">Veh. type*</label>
+                                            <select id="vehType" aria-label="Vehicle type">
+                                                <option value="" selected disabled>Select an option</option>
+                                                <option value="2W">2W</option>
+                                                <option value="Passenger car">Passenger car</option>
+                                                <option value="Light Commercial Vehicle">Light Commercial Vehicle</option>
+                                                <option value="Medium Commercial Vehicle">Medium Commercial Vehicle
+                                                </option>
+                                                <option value="Heavy Commercial Vehicle">Heavy Commercial Vehicle
+                                                </option>
+                                                <option value="Industrial application">Industrial application</option>
+                                                <option value="Agricultural Application">Agricultural Application
+                                                </option>
+                                                <option value="Marine application">Marine application</option>
+                                                <option value="Recreational Vehicle">Recreational Vehicle</option>
+                                                <option value="Other Vehicle">Other (specify)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="o-form__row">
+                                        <div class="m-form-field -half">
+                                            <div class="a-text-field">
+                                                <label for="otherType" title="Vehicle type (other)">Vehicle type
+                                                    (other)</label>
+                                                <input type="text" id="otherType" />
+                                            </div>
+                                        </div>
+                                        <div class="m-form-field -quarter">
+                                            <div class="a-text-field">
+                                                <label for="modelYear" title="Model Year">Model year*</label>
+                                                <input type="text" id="modelYear" />
+                                            </div>
+                                        </div>
+                                        <div class="m-form-field -quarter">
+                                            <div class="a-text-field">
+                                                <label for="purchaseYear" title="Purchase year">Purchase year</label>
+                                                <input type="text" id="purchaseYear" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="o-form__row">
+                                        <div class="m-form-field -half">
+                                            <div class="a-text-field">
+                                                <label for="Brand" title="Vehicle brand">Brand*</label>
+                                                <input type="text" id="brand" />
+                                            </div>
+                                        </div>
+                                        <div class="m-form-field -half">
+                                            <div class="a-text-field">
+                                                <label for="model" title="Vehicle model">Model*</label>
+                                                <input type="text" id="model" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="m-form-field">
+                                        <div class="a-text-field">
+                                            <label for="vin" title="VIN number">VIN*</label>
+                                            <input type="text" id="vin" />
+                                        </div>
+                                    </div>
+                                    <p class="-size-s">Required fields *</p>
+                                    <h4>Features</h4>
+                                    <p style="margin-bottom: 10px;">Vehicle main features</p>
+                                    <div class="o-form__row">
+                                        <div class="m-form-field -quarter">
+                                            <div class="a-dropdown a-dropdown--dynamic-width">
+                                                <label for="powerTrain" title="Fuel or power source">Fuel or power
+                                                    source</label>
+                                                <select id="powerTrain" aria-label="Powertrain">
+                                                    <option value="" selected disabled>Select an option</option>
+                                                    <option value="Gasoline">Gasoline</option>
+                                                    <option value="Diesel">Diesel</option>
+                                                    <option value="Gas">Gas</option>
+                                                    <option value="Flex">Flex</option>
+                                                    <option value="Hybrid">Hybrid</option>
+                                                    <option value="Electric">Electric</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="m-form-field -quarter">
+                                            <div class="a-dropdown a-dropdown--dynamic-width">
+                                                <label for="admission" title="Admission type">Admission type</label>
+                                                <select id="admission" aria-label="Air admission">
+                                                    <option value="" selected disabled>Select an option</option>
+                                                    <option value="Naturally aspirated">Naturally aspirated</option>
+                                                    <option value="Turbocharged">Turbocharged</option>
+                                                    <option value="Supercharged">Supercharged</option>
+                                                    <option value="Twin-charged">Twin-charged</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="m-form-field -quarter">
+                                            <div class="a-dropdown a-dropdown--dynamic-width">
+                                                <label for="cylinders" title="Number of cylinders">Number of
+                                                    cylinders</label>
+                                                <select id="cylinders" aria-label="number of cylinders">
+                                                    <option value="" selected disabled>Select an option</option>
+                                                    <option value="1 cyl.">1 cyl.</option>
+                                                    <option value="2 cyl.">2 cyl.</option>
+                                                    <option value="3 cyl.">3 cyl.</option>
+                                                    <option value="4 cyl.">4 cyl.</option>
+                                                    <option value="5 cyl.">5 cyl.</option>
+                                                    <option value="6 cyl.">6 cyl.</option>
+                                                    <option value="8 cyl.">8 cyl.</option>
+                                                    <option value="10 cyl.">10 cyl.</option>
+                                                    <option value="12 cyl.">12 cyl.</option>
+                                                    <option value="16 cyl.">16 cyl.</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="m-form-field -quarter">
+                                            <div class="a-dropdown a-dropdown--dynamic-width">
+                                                <label for="platform" title="Body type">Body type</label>
+                                                <select id="platform" aria-label="Body type">
+                                                    <option value="" selected disabled>Select an option</option>
+                                                    <option value="Sedan">Sedan</option>
+                                                    <option value="Coupe">Coupe</option>
+                                                    <option value="Hatchback">Hatchback</option>
+                                                    <option value="SUV">SUV</option>
+                                                    <option value="CUV">CUV</option>
+                                                    <option value="Convertible">Convertible</option>
+                                                    <option value="Station wagon">Station wagon</option>
+                                                    <option value="MPV">MPV</option>
+                                                    <option value="VAN">VAN</option>
+                                                    <option value="Pick-up">Pick-up</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="o-form__row">
+                                        <div class="m-form-field -quarter">
+                                            <div class="a-dropdown a-dropdown--dynamic-width">
+                                                <label for="trans" title="Transmission type">Transmission type</label>
+                                                <select id="trans" aria-label="transmission type">
+                                                    <option value="" selected disabled>Select an option</option>
+                                                    <option value="M/T">Manual Transmission (M/T)</option>
+                                                    <option value="A/T">Automatic transmission (A/T)</option>
+                                                    <option value="CVT">Continuously Variable Transmission (CVT)
+                                                    </option>
+                                                    <option value="AMT">Automated Manual Transmission (AMT)</option>
+                                                    <option value="DCT">Dual-Clutch Transmission (DCT)</option>
+                                                    <option value="Other">Other</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="m-form-field -quarter">
+                                            <div class="a-text-field">
+                                                <label for="otherTrans" title="Other transmission">Other trans.*</label>
+                                                <input type="text" id="otherTrans" />
+                                            </div>
+                                        </div>
+                                        <div class="m-form-field -quarter">
+                                            <div class="a-text-field">
+                                                <label for="engineModel" title="Engine model">Engine model*</label>
+                                                <input type="text" id="engineModel" />
+                                            </div>
+                                        </div>
+                                        <div class="m-form-field -quarter">
+                                            <div class="a-text-field">
+                                                <label for="engineSize" title="engine displacement">Engine
+                                                    displacement*</label>
+                                                <input type="text" id="engineSize" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h4>Systems</h4>
+                                    <p style="margin-bottom: 10px;">Vehicles systems and variants</p>
+                                    <div class="m-form-field">
+                                        <div class="a-text-field">
+                                            <label for="availableSystems" title="Systems and variants">Available systems
+                                                (list available
+                                                systems)*</label>
+                                            <input type="text" id="availableSystems" />
+                                        </div>
+                                    </div>
+                                    <p class="-size-s">Required fields *</p>
+                                    <h4>Maintenance</h4>
+                                    <p>Require Service?</p>
+                                    <div class="a-toggle" style="margin-top: 20px; margin-bottom: 20px;">
+                                        <label>
+                                            <input id="toggle-vehicle" type="checkbox" role="switch" />
+                                            <span class="a-toggle__label a-toggle__label--left a-toggle__label--right">
+                                                Not required
+                                            </span>
+                                            <div class="a-toggle__trigger"></div>
+                                            <span class="a-toggle__label a-toggle__label--left a-toggle__label--right">
+                                                Required
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <div class="serviceTypeV">
+                                        <p style="margin-bottom: 10px;">Service type and frequency</p>
+                                        <div class="o-form__row">
+                                            <div class="m-form-field -half">
+                                                <div class="a-dropdown a-dropdown--dynamic-width">
+                                                    <label for="servTypeVeh" title="Service type">Service type</label>
+                                                    <select id="servTypeVeh" aria-label="Service type">
+                                                        <option value="" selected disabled>Select an option</option>
+                                                        <option value="Service (oil, filters and other)">Service (oil,
+                                                            filters, etc.)</option>
+                                                        <option value="Cleaning and lubrication">Cleaning and
+                                                            lubrication</option>
+                                                        <option value="Software update">Software update</option>
+                                                        <option value="Complete">Complete</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="m-form-field -half">
+                                                <div class="a-dropdown a-dropdown--dynamic-width">
+                                                    <label for="servFreq" title="Service frequency">Service
+                                                        frequency</label>
+                                                    <select id="servFreq" aria-label="Service frequency">
+                                                        <option value="" selected disabled>Select an option</option>
+                                                        <option value="Weekly">Weekly</option>
+                                                        <option value="Monthly">Monthly</option>
+                                                        <option value="Every six months">Every six months</option>
+                                                        <option value="Every year">Every year</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="a-button a-button--primary -without-icon"
+                                        data-frok-action="submitVehicle">
+                                        <span class="a-button__label">Submit form</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- End new vehicle form -->
+
+                        <!-- Headline for equipment registry -->
+
+                        <div class="a-tile -secondary" id="cont3" style="width: 100%; margin-bottom: 20px;">
+                            <a href="#" aria-label="Link to open create form" class="a-tile__link">
+                                <div class="a-text" style="padding:2rem">
+                                    <span class="-size-s" style="display:block;margin-bottom:0.5rem">
+                                        Category
+                                    </span>
+                                    <h3 class="-size-xl" style="margin-bottom:0.5rem;margin-top:0">
+                                        Create new equipment
+                                        <i class="a-icon ui-ic-inline-right-bold"
+                                            style="margin-left:0.5rem;font-size:24px;vertical-align:baseline"></i>
+                                    </h3>
+                                    <p class="-size-m" style="margin:0">Equipment information</p>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- End of  equipment headline -->
+
+                        <!-- New equipment form -->
+
+                        <div class="form_container -floating-shadow-s" data-container-number="cont3"
+                            style="width: 80%; margin: auto; margin-bottom: 20px;">
+                            <div class="o-form new" style="width: 80%; margin: auto;">
+                                <form aria-label="New Equipment" id="newEquipment" style="width: 80%; margin: auto;"
+                                    onsubmit="addEquipment(event)">
+                                    <h4>Equipment information</h4>
+                                    <div class=" m-form-field">
+                                        <div class="a-text-field">
+                                            <label for="equipmentName">Equipment name*</label>
+                                            <input type="text" id="equipmentName" />
+                                        </div>
+                                    </div>
+                                    <div class=" m-form-field">
+                                        <div class="a-text-field">
+                                            <label for="equipmentSerial">Equipment serial number or inventory
+                                                number*</label>
+                                            <input type="text" id="equipmentSerial" />
+                                        </div>
+                                    </div>
+                                    <p class="-size-s">Required fields *</p>
+                                    <h4>Specifications</h4>
+                                    <p style="margin-bottom: 10px;">Equipment description</p>
+                                    <div class="o-form__row">
+                                        <div class="m-form-field">
+                                            <div class="a-text-field">
+                                                <label for="equipmentUse">Equipment use (describe)*</label>
+                                                <input type="text" id="equipmentUse" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="o-form__row">
+                                        <div class="m-form-field -half">
+                                            <div class="a-dropdown a-dropdown--dynamic-width">
+                                                <label for="equipType" title="Equipment type">Equipment type*</label>
+                                                <select id="equipType" aria-label="Equipment type">
+                                                    <option value="" selected disabled>Select an option</option>
+                                                    <option value="Test bench">Test bench</option>
+                                                    <option value="Test equipment">Test equipment</option>
+                                                    <option value="Test stand (motor)">Test stand (motor)</option>
+                                                    <option value="Test stand (panel)">Test stand (panel)</option>
+                                                    <option value="Test device">Test device</option>
+                                                    <option value="Other (specify)">Other (specify)</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="m-form-field -half">
+                                            <div class="a-text-field">
+                                                <label for="equipTypeOther">Equipment type (other)</label>
+                                                <input type="text" id="equipTypeOther" disabled="" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="o-form__row">
+                                        <div class="m-form-field -quarter">
+                                            <div class="a-dropdown a-dropdown--dynamic-width">
+                                                <label for="equipMobility" title="Mobility">Mobility</label>
+                                                <select id="equipMobility" aria-label="Equipment mobility">
+                                                    <option value="" selected disabled>Select an option</option>
+                                                    <option value="Stationary">Stationary</option>
+                                                    <option value="Mobile">Mobile</option>
+                                                    <option value="Portable">Portable</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="m-form-field -half">
+                                            <div class="a-dropdown a-dropdown--dynamic-width a-dropdown--disabled">
+                                                <label for="equipLocation">Location</label>
+                                                <select id="equipLocation" aria-label="Equipment location">
+                                                    <option value="" selected disabled>Select an option</option>
+                                                    <option value="Sala Captação">Sala Captação</option>
+                                                    <option value="Sala 2">Sala 2</option>
+                                                    <option value="Sala 3">Sala 3</option>
+                                                    <option value="Sala 4">Sala 4</option>
+                                                    <option value="Sala MP">Sala MP</option>
+                                                    <option value="Box 1">Box 1</option>
+                                                    <option value="Box 2">Box 2</option>
+                                                    <option value="Box 3">Box 3</option>
+                                                    <option value="Box 4">Box 4</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="o-form__row">
+                                        <div class="m-form-field -half">
+                                            <div class="a-dropdown a-dropdown--dynamic-width">
+                                                <label for="powerSupply">Power supply</label>
+                                                <select id="powerSupply" aria-label="Equipment power supply">
+                                                    <option value="" selected disabled>Select an option</option>
+                                                    <option value="12Vdc">12Vdc</option>
+                                                    <option value="110V">110V</option>
+                                                    <option value="220V">220V</option>
+                                                    <option value="110V/220V (Bivolt)">110V/220V (Bivolt)</option>
+                                                    <option value="440V">440V</option>
+                                                    <option value="None">None</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h4>Maintenance</h4>
+                                    <p>Require Service?</p>
+                                    <div class="a-toggle" style="margin-top: 20px; margin-bottom: 20px;">
+                                        <label>
+                                            <input id="toggle-equipment" type="checkbox" role="switch" />
+                                            <span class="a-toggle__label a-toggle__label--left a-toggle__label--right">
+                                                Not required
+                                            </span>
+                                            <div class="a-toggle__trigger"></div>
+                                            <span class="a-toggle__label a-toggle__label--left a-toggle__label--right">
+                                                Required
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <div class="serviceTypeE">
+                                        <p style="margin-bottom: 10px;">Service type and frequency</p>
+                                        <div class="o-form__row">
+                                            <div class="m-form-field -half">
+                                                <div class="a-dropdown a-dropdown--dynamic-width">
+                                                    <label for="servTypeEqu" title="Service type">Service type</label>
+                                                    <select id="servTypeEqu" aria-label="Service type">
+                                                        <option value="" selected disabled>Select an option</option>
+                                                        <option value="Service (oil, filters and other)">Service (oil,
+                                                            filters, etc.)</option>
+                                                        <option value="Cleaning and lubrication">Cleaning and
+                                                            lubrication</option>
+                                                        <option value="Software update">Software update</option>
+                                                        <option value="Complete">Complete</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="m-form-field -half">
+                                                <div class="a-dropdown a-dropdown--dynamic-width">
+                                                    <label for="servFreqEqu" title="Service frequency">Service
+                                                        frequency</label>
+                                                    <select id="servFreqEqu" aria-label="Service frequency">
+                                                        <option value="" selected disabled>Select an option</option>
+                                                        <option value="Weekly">Weekly</option>
+                                                        <option value="Monthly">Monthly</option>
+                                                        <option value="Every six months">Every six months</option>
+                                                        <option value="Every year">Every year</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="a-button a-button--primary -without-icon"
+                                        data-frok-action="submit">
+                                        <span class="a-button__label">Submit form</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- End new equipment form -->
+
+                        <!-- Headline for multimedia registry -->
+
+                        <div class="a-tile -secondary" id="cont4" style="width: 100%; margin-bottom: 20px;">
+                            <a href="#" aria-label="Link to open create form" class="a-tile__link">
+                                <div class="a-text" style="padding:2rem">
+                                    <span class="-size-s" style="display:block;margin-bottom:0.5rem">
+                                        Category
+                                    </span>
+                                    <h3 class="-size-xl" style="margin-bottom:0.5rem;margin-top:0">
+                                        Create new multimedia
+                                        <i class="a-icon ui-ic-inline-right-bold"
+                                            style="margin-left:0.5rem;font-size:24px;vertical-align:baseline"></i>
+                                    </h3>
+                                    <p class="-size-m" style="margin:0">Multimedia information</p>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- End of  multimedia headline -->
+
+                        <!-- New multimedia form -->
+
+                        <div class="form_container -floating-shadow-s" data-container-number="cont4"
+                            style="width: 80%; margin: auto; margin-bottom: 20px;">
+                            <div class="o-form new" style="width: 80%; margin: auto;">
+                                <form aria-label="New Multimedia" id="newMultimedia" style="width: 80%; margin: auto;"
+                                    onsubmit="addMultimedia(event)">
+                                    <h4>Multimedia information</h4>
+                                    <div class=" m-form-field">
+                                        <div class="a-text-field">
+                                            <label for="multimediaName">Multimedia name*</label>
+                                            <input type="text" id="multimediaName" />
+                                        </div>
+                                    </div>
+                                    <div class=" m-form-field">
+                                        <div class="a-text-field">
+                                            <label for="multimediaSerial">multimedia serial number or inventory
+                                                number*</label>
+                                            <input type="text" id="multimediaSerial" />
+                                        </div>
+                                    </div>
+                                    <p class="-size-s">Required fields *</p>
+                                    <h4>Specifications</h4>
+                                    <p style="margin-bottom: 10px;">Multimedia description</p>
+                                    <div class="o-form__row">
+                                        <div class="m-form-field -half">
+                                            <div class="a-dropdown a-dropdown--dynamic-width">
+                                                <label for="multimType" title="Multimedia type">Multimedia type*</label>
+                                                <select id="multimType" aria-label="Multimedia type">
+                                                    <option value="" selected disabled>Select an option</option>
+                                                    <option value="Long throw projector">Long throw projector</option>
+                                                    <option value="Short throw projector">Short throw projector</option>
+                                                    <option value="TV monitor">TV monitor</option>
+                                                    <option value="Interactive TV Monitor">Interactive TV Monitor
+                                                    </option>
+                                                    <option value="Audio device">Audio device</option>
+                                                    <option value="Other (specify)">Other (specify)</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="m-form-field -half">
+                                            <div class="a-text-field">
+                                                <label for="multimTypeOther">Multimedia type (other)</label>
+                                                <input type="text" id="multimTypeOther" disabled="" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="o-form__row">
+                                        <div class="m-form-field -quarter">
+                                            <div class="a-dropdown a-dropdown--dynamic-width">
+                                                <label for="multimMobility" title="Multimedia mobility">Mobility</label>
+                                                <select id="multimMobility" aria-label="MUltimedia mobility">
+                                                    <option value="" selected disabled>Select an option</option>
+                                                    <option value="Stationary">Stationary</option>
+                                                    <option value="Mobile">Mobile</option>
+                                                    <option value="Portable">Portable</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="m-form-field -half">
+                                            <div class="a-dropdown a-dropdown--dynamic-width a-dropdown--disabled">
+                                                <label for="multimLocation">Location</label>
+                                                <select id="multimLocation" aria-label="Equipment location">
+                                                    <option value="" selected disabled>Select an option</option>
+                                                    <option value="Sala Captação">Sala Captação</option>
+                                                    <option value="Sala 2">Sala 2</option>
+                                                    <option value="Sala 3">Sala 3</option>
+                                                    <option value="Sala 4">Sala 4</option>
+                                                    <option value="Sala MP">Sala MP</option>
+                                                    <option value="Box 1">Box 1</option>
+                                                    <option value="Box 2">Box 2</option>
+                                                    <option value="Box 3">Box 3</option>
+                                                    <option value="Box 4">Box 4</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="o-form__row">
+                                        <div class="m-form-field -half">
+                                            <div class="a-dropdown a-dropdown--dynamic-width">
+                                                <label for="multimPowerSupply">Power supply</label>
+                                                <select id="multimPowerSupply" aria-label="Equipment power supply">
+                                                    <option value="" selected disabled>Select an option</option>
+                                                    <option value="110V">110V</option>
+                                                    <option value="110V/220V (Bivolt)">110V/220V (Bivolt)</option>
+                                                    <option value="220V">220V</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="-size-s">Required fields *</p>
+                                    <h4>Transportation</h4>
+                                    <p>The device can be used outside the CTA?</p>
+                                    <div class="m-form-field m-form-field--radio">
+                                        <div class="a-radio-button">
+                                            <input type="radio" id="MultimOutYes" name="MultimOut" value="Yes" />
+                                            <label for="MultimOutYes">Yes</label>
+                                        </div>
+                                    </div>
+                                    <div class="m-form-field m-form-field--radio">
+                                        <div class="a-radio-button">
+                                            <input type="radio" id="MultimOutNo" name="MultimOut" value="No" />
+                                            <label for="MultimOutNo">No</label>
+                                        </div>
+                                    </div>
+
+                                    <button type="submit" class="a-button a-button--primary -without-icon"
+                                        data-frok-action="submit">
+                                        <span class="a-button__label">Submit form</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- End new multimedia form -->
+
+                        <!-- Headline for workstation registry -->
+
+                        <div class="a-tile -secondary" id="cont5" style="width: 100%; margin-bottom: 20px;">
+                            <a href="#" aria-label="Link to open create form" class="a-tile__link">
+                                <div class="a-text" style="padding:2rem">
+                                    <span class="-size-s" style="display:block;margin-bottom:0.5rem">
+                                        Category
+                                    </span>
+                                    <h3 class="-size-xl" style="margin-bottom:0.5rem;margin-top:0">
+                                        Create new workstation
+                                        <i class="a-icon ui-ic-inline-right-bold"
+                                            style="margin-left:0.5rem;font-size:24px;vertical-align:baseline"></i>
+                                    </h3>
+                                    <p class="-size-m" style="margin:0">workstation information</p>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- End of workstation headline -->
+
+                        <!-- New workstation form -->
+
+                        <div class="form_container -floating-shadow-s" data-container-number="cont5"
+                            style="width: 80%; margin: auto; margin-bottom: 20px;">
+                            <div class="o-form new" style="width: 80%; margin: auto;">
+                                <form aria-label="New workstation" style="width: 80%; margin: auto;"
+                                    onsubmit="addWorkstation(event)">
+                                    <h4>Workstation information</h4>
+                                    <div class=" m-form-field">
+                                        <div class="a-text-field">
+                                            <label for="workstationName">Workstation name*</label>
+                                            <input type="text" id="workstationName" />
+                                        </div>
+                                    </div>
+                                    <div class=" m-form-field">
+                                        <div class="a-text-field">
+                                            <label for="workstationDescription">Workstation description*</label>
+                                            <input type="text" id="workstationDescription" />
+                                        </div>
+                                    </div>
+                                    <p class="-size-s">Required fields *</p>
+                                    <h4>Workstation details</h4>
+                                    <p>Quantity and location </p>
+                                    <div class="o-form__row">
+                                        <div class="m-form-field -half">
+                                            <div class="a-value-modificator" style="margin: 0;">
+                                                <label for="workstationQty" title="Total inventory (quantity)">
+                                                    Total inventory (quantity)*
+                                                </label>
+                                                <input type="number" min="0" max="100" step="1" id="workstationQty" />
+                                                <button type="button" class="a-value-modificator__minus-button"
+                                                    aria-label="Minus">
+                                                    <i class="a-icon boschicon-bosch-ic-less-minimize"></i>
+                                                </button>
+                                                <button type="button" class="a-value-modificator__plus-button"
+                                                    aria-label="Plus">
+                                                    <i class="a-icon boschicon-bosch-ic-add"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="m-form-field -half">
+                                            <div class="a-dropdown ">
+                                                <label for="workMobility">Mobility</label>
+                                                <select id="workMobility"
+                                                    aria-label="here goes the aria label for the dropdown">
+                                                    <option value="" selected disabled>Select an option</option>
+                                                    <option value="Yes">Yes</option>
+                                                    <option value="No">No</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="a-button a-button--primary -without-icon"
+                                        data-frok-action="submit">
+                                        <span class="a-button__label">Submit form</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- End new workstation form -->
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+    <script src="../js/script.js"></script>
+    <script type="module">
+        import { setLanguage, updateLanguage, setTheme, updateUsernameDisplay, logOut, updateNavMenu, navigationMenu, debounce, getNotificationContainer, showPersistentNotification, hidePersistentNotification, showNotification } from '../js/common.js';
+        setLanguage();
+        setTheme();
+        updateUsernameDisplay();
+        updateNavMenu();
+        navigationMenu();
+
+        document.getElementById('logoutButton').addEventListener('click', logOut);
+        document.getElementById('smallLogoutButton').addEventListener('click', logOut);
+
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            addClickEventToTiles();
+            initializeToggles();
+        });
+
+         /**
+         * Function to activate tiles
+         * 1. Get selected tile.
+         * 2. Change display style for container.
+         * 3. 
+         *
+         * @param {none} input
+         * @Param{none} Output 
+         */
+        function addClickEventToTiles() {
+            const tileLinks = document.querySelectorAll('.a-tile');
+            let currentOpenContainer = null;
+            tileLinks.forEach(link => {
+
+                link.addEventListener('click', (e) => {
+                    e.preventDefault(); // Prevent the default link action
+
+                    // Get the id of the clicked link
+                    const containerNumber = link.id;
+
+                    // Find the corresponding form container with the same data-container-number
+                    const targetContainer = document.querySelector(
+                        `.form_container[data-container-number="${containerNumber}"]`
+                    );
+
+                    // Check if the target container exists
+                    if (targetContainer) {
+                        // If the clicked container is already open, close it
+                        if (currentOpenContainer === targetContainer) {
+                            targetContainer.style.display = 'none'; // Hide the current container
+                            currentOpenContainer = null; // Reset the current open container
+                        } else {
+                            // Close the previously opened container if it exists
+                            if (currentOpenContainer) {
+                                currentOpenContainer.style.display = 'none'; // Hide the previous container
+                            }
+                            // Show the new container
+                            targetContainer.style.display = 'block'; // Show the clicked container
+                            currentOpenContainer = targetContainer; // Update the current open container
+                        }
+                    }
+                });
+            });
+        }
+
+        /**
+         * Function to toggle function
+         * 1. Get toggle button state.
+         * 2. display inner container.
+         * 3. 
+         *
+         * @param {none} input
+         * @Param{none} Output 
+         */
+        function initializeToggles() {
+            const toggleActions = [{
+                toggle: 'toggle-vehicle',
+                target: '.serviceTypeV',
+                action: 'block'
+            },
+            {
+                toggle: 'toggle-equipment',
+                target: '.serviceTypeE',
+                action: 'block'
+            }
+            ];
+            // Initialize toggle buttons with target containers
+            toggleActions.forEach(({
+                toggle,
+                target,
+                action
+            }) => {
+                const toggleInput = document.getElementById(toggle);
+                const targetDiv = document.querySelector(target);
+                // Ensure the target starts hidden, even if the toggle is initially checked
+                targetDiv.style.display = 'none';
+                // Function to update display based on toggle status
+                const updateDisplay = () => {
+                    targetDiv.style.display = toggleInput.checked ? action : 'none';
+                };
+                updateDisplay(); // Initial check
+                toggleInput.addEventListener('change', updateDisplay);
+            });
+            // Handle select inputs with "Other (specify)" options
+            const selects = [{
+                selectId: 'equipType',
+                targetId: 'equipTypeOther',
+                condition: 'Other (specify)'
+            },
+            {
+                selectId: 'multimType',
+                targetId: 'multimTypeOther',
+                condition: 'Other (specify)'
+            }
+            ];
+
+            selects.forEach(({
+                selectId,
+                targetId,
+                condition
+            }) => {
+                const selectElement = document.getElementById(selectId);
+                const targetInput = document.getElementById(targetId);
+                // Ensure the first available option is selected on load
+                selectElement.selectedIndex = 0;
+                // Function to toggle disabled state based on selected option
+                const toggleDisabled = () => {
+                    targetInput.disabled = selectElement.value !== condition;
+                };
+                toggleDisabled(); // Initial check
+                selectElement.addEventListener('change', toggleDisabled);
+            });
+            // Handle mobility toggles for equipment and multimedia
+            const mobilityToggles = [{
+                selectId: 'equipMobility',
+                targetParent: '#equipLocation'
+            },
+            {
+                selectId: 'multimMobility',
+                targetParent: '#multimLocation'
+            }
+            ];
+            mobilityToggles.forEach(({
+                selectId,
+                targetParent
+            }) => {
+                const selectElement = document.getElementById(selectId);
+                const parentDiv = document.querySelector(targetParent).closest('.a-dropdown');
+                // Ensure the first available option is selected on load
+                selectElement.selectedIndex = 0;
+                // Function to toggle the disabled class based on mobility selection
+                const toggleDisabled = () => {
+                    parentDiv.classList.toggle('a-dropdown--disabled', selectElement.value !== 'Stationary');
+                };
+                toggleDisabled(); // Initial check
+                selectElement.addEventListener('change', toggleDisabled);
+            });
+        }
+
+        /**
+         * Call to add resource
+         * 1. Send trainer data for CRUD operation.
+         * 2. Include new resource into db : Trainer.
+         * 3. 
+         *
+         * @param {none} input
+         * @Param{none} Output 
+         */
+        async function addTrainer(event) {
+            event.preventDefault(); // Prevent form from submitting traditionally
+
+            // Get form values
+            const trainerName = document.getElementById('trainerName').value.trim();
+            const topic1 = document.getElementById('t1').value;
+            const topic2 = document.getElementById('t2').value;
+            const topic3 = document.getElementById('t3').value;
+            const topic4 = document.getElementById('t4').value;
+            const otherTopic = document.getElementById('otherTopic').value.trim();
+            const pt = document.getElementById('pt').checked ? 'Yes' : 'No';
+            const sp = document.getElementById('es').checked ? 'Yes' : 'No';
+            const en = document.getElementById('en').checked ? 'Yes' : 'No';
+            const langOther = document.getElementById('addLang').value.trim();
+            const travelAvailability = document.querySelector('input[name="travelAble"]:checked')?.value;
+            const national = document.getElementById('travelNational').checked ? 'Yes' : 'No';
+            const international = document.getElementById('travelInternational').checked ? 'Yes' : 'No';
+            const category_id = 1;
+            const location = 'TRAINING CENTER';
+            const status = 'Active';
+
+            // Validate required fields
+            const missingFields = [];
+            if (!trainerName) missingFields.push('Trainer Name');
+            if (!topic1) missingFields.push('Topic 1');
+            if (!travelAvailability) missingFields.push('Travel Availability');
+
+            // If there are missing fields, alert the user
+            if (missingFields.length > 0) {
+                showNotification('Please fill in the following required fields: ' + missingFields.join(', '));
+                return;
+            }
+
+            const data = {
+                trainerName: trainerName.toUpperCase(),
+                topic1: topic1.toUpperCase(),
+                topic2: topic2.toUpperCase(),
+                topic3: topic3.toUpperCase(),
+                topic4: topic4.toUpperCase(),
+                topicOther: otherTopic.toUpperCase(),
+                pt: pt,
+                sp: sp,
+                en: en,
+                langOther: langOther.toUpperCase(),
+                travelAvailability: travelAvailability,
+                national: national,
+                international: international,
+                category_id: category_id,
+                location: location,
+                status: status
+            };
+
+            console.log(data);
+
+            // Show a persistent "loading" notification.
+            showPersistentNotification("Adding trainer...", "loading");
+
+
+
+            try {
+                // Send data to the main process
+                const result = await window.api.createResourceUnified('trainer', data);
+                hidePersistentNotification();
+                if (result.success) {
+                    showNotification(result.message, "success");
+                    setTimeout(() => {
+                        window.location.href = 'new_resources.html'; // Redirect to the resources page
+                    }, 2000);
+                } else {
+                    showNotification("Error: " + result.message, "error");
+                }
+            } catch (error) {
+                hidePersistentNotification();
+                showNotification("An error occurred while adding trainer. Please try again.", "error");
+            }
+        }
+
+        /**
+         * Call to add resource
+         * 1. Send trainer data for CRUD operation.
+         * 2. Include new resource into db : Vehicles.
+         * 3. 
+         *
+         * @param {none} input
+         * @Param{none} Output 
+         */
+        async function addVehicle(event) {
+            event.preventDefault(); // Prevent form from submitting traditionally
+
+
+            const license = document.getElementById('license').value;
+            const veh_type = document.getElementById('vehType').value;
+            const other_veh_type = document.getElementById('otherType').value;
+            const year = document.getElementById('modelYear').value;
+            const purchase_year = document.getElementById('purchaseYear').value;
+            const brand = document.getElementById('brand').value;
+            const model = document.getElementById('model').value;
+            const VIN = document.getElementById('vin').value;
+            const fuel_type = document.getElementById('powerTrain').value;
+            const admission_type = document.getElementById('admission').value;
+            const cylinders = document.getElementById('cylinders').value;
+            const body_type = document.getElementById('platform').value;
+            const transmission = document.getElementById('trans').value;
+            const transmission_other = document.getElementById('otherTrans').value;
+            const engine_model = document.getElementById('engineModel').value;
+            const engine_size = document.getElementById('engineSize').value;
+            const system = document.getElementById('availableSystems').value;
+            const require_service = document.getElementById('toggle-vehicle').checked ? 'Yes' : 'No';
+            const service_type = document.getElementById('servTypeVeh').value;
+            const service_freq = document.getElementById('servFreq').value;
+            const veh_category_id = 2;
+            const location = 'TRAINING CENTER';
+            const status = 'Active';
+
+            const missingFields = [];
+            if (!license) missingFields.push('License plate');
+            if (!veh_type) missingFields.push('Vehicle type');
+            if (!year) missingFields.push('Model year');
+            if (!brand) missingFields.push('Vehicle brand');
+            if (!model) missingFields.push('Vehicle model');
+            if (!VIN) missingFields.push('VIN number');
+            if (!system) missingFields.push('Available systems');
+            if (!fuel_type) missingFields.push('Fuel type');
+            if (!engine_model) missingFields.push('Engine model');
+
+
+            if (missingFields.length > 0) {
+                alert('Please fill in the following required fields: ' + missingFields.join(', '));
+                return;
+            }
+
+            const data = {
+                license: license.toUpperCase(),
+                veh_type: veh_type.toUpperCase(),
+                other_veh_type: other_veh_type.toUpperCase(),
+                year: year,
+                purchase_year: purchase_year,
+                brand: brand.toUpperCase(),
+                model: model.toUpperCase(),
+                VIN: VIN.toUpperCase(),
+                fuel_type: fuel_type.toUpperCase(),
+                admission_type: admission_type.toUpperCase(),
+                cylinders: cylinders.toUpperCase(),
+                body_type: body_type.toUpperCase(),
+                transmission: transmission.toUpperCase(),
+                transmission_other: transmission_other.toUpperCase(),
+                engine_model: engine_model.toUpperCase(),
+                engine_size: engine_size.toUpperCase(),
+                system: system.toUpperCase(),
+                require_service: require_service,
+                service_type: service_type.toUpperCase(),
+                service_freq: service_freq.toUpperCase(),
+                veh_category_id: veh_category_id,
+                location: location,
+                status: 'Active'
+            };
+
+            // Show a persistent "loading" notification.
+            showPersistentNotification("Adding vehicle...", "loading");
+
+
+            try {
+                // Send data to the main process
+                const result = await window.api.createResourceUnified('vehicle', data);
+                hidePersistentNotification();
+                if (result.success) {
+                    showNotification(result.message, "success");
+                    setTimeout(() => {
+                        window.location.href = 'new_resources.html'; // Redirect to the resources page
+                    }, 2000);
+                } else {
+                    showNotification("Error: " + result.message, "error");
+                }
+            } catch (error) {
+                hidePersistentNotification();
+                showNotification("An error occurred while adding vehicle. Please try again.", "error"); F
+            }
+        }
+
+         /**
+         * Call to add resource
+         * 1. Send trainer data for CRUD operation.
+         * 2. Include new resource into db : Equipment.
+         * 3. 
+         *
+         * @param {none} input
+         * @Param{none} Output 
+         */
+        async function addEquipment(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Get form values
+            const equipmentName = document.getElementById('equipmentName').value.trim();
+            const equipmentSn = document.getElementById('equipmentSerial').value.trim();
+            const equipmentUse = document.getElementById('equipmentUse').value;
+            const equipmentType = document.getElementById('equipType').value;
+            const equipmentTypeOther = document.getElementById('equipTypeOther').value.trim();
+            const equipmentMobility = document.getElementById('equipMobility').value;
+            const equipmentLocation = document.getElementById('equipLocation').value.trim();
+            const equipmentPower = document.getElementById('powerSupply').value;
+            const requireService = document.getElementById('toggle-equipment').checked ? 'Yes' : 'No';
+            const serviceType = document.getElementById('servTypeEqu').value;
+            const serviceFreq = document.getElementById('servFreqEqu').value;
+            const equ_category_id = 3;
+            const status = 'Active';
+
+            // Validate required fields
+            const missingFields = [];
+            if (!equipmentName) missingFields.push('Equipment Name');
+            if (!equipmentSn) missingFields.push('Equipment Serial Number');
+            if (!equipmentUse) missingFields.push('Equipment Use');
+            if (!equipmentType) missingFields.push('Equipment Type');
+            if (!equipmentMobility) missingFields.push('Equipment mobility');
+            if (!equipmentPower) missingFields.push('Equipment power');
+            if (!requireService) missingFields.push('Require service');
+
+            // If there are missing fields, alert the user
+            if (missingFields.length > 0) {
+                alert('Please fill in the following required fields: ' + missingFields.join(', '));
+                return;
+            }
+
+            // Prepare data to send to the server
+            const data = {
+                equipment_name: equipmentName.toUpperCase(),
+                equipment_sn: equipmentSn.toUpperCase(),
+                equipment_use: equipmentUse.toUpperCase(),
+                equipment_type: equipmentType.toUpperCase(),
+                equipment_type_other: equipmentTypeOther.toUpperCase(),
+                equipment_mobility: equipmentMobility.toUpperCase(),
+                equipment_location: equipmentLocation,
+                equipment_power: equipmentPower.toUpperCase(),
+                require_service: requireService,
+                service_type: serviceType.toUpperCase(),
+                service_freq: serviceFreq.toUpperCase(),
+                equ_category_id: equ_category_id,
+                status: status
+            };
+
+            // Show a persistent "loading" notification.
+            showPersistentNotification("Adding equipment...", "loading");
+
+
+            try {
+                // Send data to the main process
+                const result = await window.api.createResourceUnified('equipment', data);
+                hidePersistentNotification();
+                if (result.success) {
+                    showNotification(result.message, "success");
+                    setTimeout(() => {
+                        window.location.href = 'new_resources.html'; // Redirect to the resources page
+                    }, 2000);
+                } else {
+                    showNotification("Error: " + result.message, "error");
+                }
+            } catch (error) {
+                hidePersistentNotification();
+                showNotification("An error occurred while adding equipment. Please try again.", "error"); F
+            }
+        }
+
+         /**
+         * Call to add resource
+         * 1. Send trainer data for CRUD operation.
+         * 2. Include new resource into db : Multimedia.
+         * 3. 
+         *
+         * @param {none} input
+         * @Param{none} Output 
+         */ 
+        async function addMultimedia(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Get form values
+            const multimediaName = document.getElementById('multimediaName').value.trim();
+            const multimediaSn = document.getElementById('multimediaSerial').value.trim();
+            const multimediaType = document.getElementById('multimType').value;
+            const multimediaTypeOther = document.getElementById('multimTypeOther').value.trim();
+            const multimediaMobility = document.getElementById('multimMobility').value;
+            const multimediaLocation = document.getElementById('multimLocation').value.trim() ? "" : "Training Center";
+            const multimediaPower = document.getElementById('multimPowerSupply').value;
+            const useOutCta = document.querySelector('input[name="MultimOut"]:checked')?.value;
+            const mult_category_id = 4;
+            const status = 'Active';
+
+            // Validate required fields
+            const missingFields = [];
+            if (!multimediaName) missingFields.push('Multimedia Name');
+            if (!multimediaSn) missingFields.push('Multimedia Serial Number');
+            if (!multimediaType) missingFields.push('Multimedia Type');
+            if (!multimediaMobility) missingFields.push('Multimedia mobility');
+            if (!multimediaPower) missingFields.push('Multimedia power');
+            if (!useOutCta) missingFields.push('Use Outside CTA');
+
+            // If there are missing fields, alert the user
+            if (missingFields.length > 0) {
+                alert('Please fill in the following required fields: ' + missingFields.join(', '));
+                return;
+            }
+
+            // Prepare data to send to the server
+            const data = {
+                multimedia_name: multimediaName.toUpperCase(),
+                multimedia_sn: multimediaSn.toUpperCase(),
+                multimedia_type: multimediaType.toUpperCase(),
+                multimedia_type_other: multimediaTypeOther.toUpperCase(),
+                multimedia_mobility: multimediaMobility.toUpperCase(),
+                location: multimediaLocation.toUpperCase(),
+                multimedia_power: multimediaPower.toUpperCase(),
+                use_out_cta: useOutCta.toUpperCase(),
+                mult_category_id: mult_category_id,
+                status: status
+            };
+
+            // Show a persistent "loading" notification.
+            showPersistentNotification("Adding multimedia...", "loading");
+
+
+            try {
+                // Send data to the main process
+                const result = await window.api.createResourceUnified('multimedia', data);
+                hidePersistentNotification();
+                if (result.success) {
+                    showNotification(result.message, "success");
+                    setTimeout(() => {
+                        window.location.href = 'new_resources.html'; // Redirect to the resources page
+                    }, 2000);
+                } else {
+                    showNotification("Error: " + result.message, "error");
+                }
+            } catch (error) {
+                hidePersistentNotification();
+                showNotification("An error occurred while adding multimedia. Please try again.", "error"); F
+            }
+        }
+
+        /**
+         * Call to add resource
+         * 1. Send trainer data for CRUD operation.
+         * 2. Include new resource into db : workstation.
+         * 3. 
+         *
+         * @param {none} input
+         * @Param{none} Output 
+         */
+        async function addWorkstation(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Get form values
+            const workstationName = document.getElementById('workstationName').value.trim();
+            const workstationDescription = document.getElementById('workstationDescription').value.trim();
+            const workstationQty = document.getElementById('workstationQty').value;
+            const workstationMobility = document.getElementById('workMobility').value;
+            const work_category_id = 5;
+            const status = 'Active';
+            const location = '';
+
+            // Validate required fields
+            const missingFields = [];
+            if (!workstationName) missingFields.push('Workstation Name');
+            if (!workstationDescription) missingFields.push('Workstation Description');
+            if (!workstationMobility) missingFields.push('Workstation Mobility');
+
+            // If there are missing fields, alert the user
+            if (missingFields.length > 0) {
+                alert('Please fill in the following required fields: ' + missingFields.join(', '));
+                return;
+            }
+
+            // Prepare data to send to the server
+            const data = {
+                workstation_name: workstationName.toUpperCase(),
+                workstation_description: workstationDescription.toUpperCase(),
+                workstation_qty: workstationQty,
+                workstation_mobility: workstationMobility.toUpperCase(),
+                work_category_id: work_category_id,
+                status: status,
+                location: location
+            };
+
+            // Show a persistent "loading" notification.
+            showPersistentNotification("Adding workstation...", "loading");
+
+
+            try {
+                // Send data to the main process
+                const result = await window.api.createResourceUnified('workstation', data);
+                hidePersistentNotification();
+                if (result.success) {
+                    showNotification(result.message, "success");
+                    setTimeout(() => {
+                        window.location.href = 'new_resources.html'; // Redirect to the resources page
+                    }, 2000);
+                } else {
+                    showNotification("Error: " + result.message, "error");
+                }
+            } catch (error) {
+                hidePersistentNotification();
+                showNotification("An error occurred while adding workstation. Please try again.", "error"); F
+            }
+        }
+    </script>
+</body>
+
+</html>
